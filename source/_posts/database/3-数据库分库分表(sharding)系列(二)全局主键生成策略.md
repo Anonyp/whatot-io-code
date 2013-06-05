@@ -21,6 +21,7 @@ comments: true
 [数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示](http://blog.csdn.net/bluishglc/article/details/7696085)
 
 本文原文连接: http://blog.csdn.net/bluishglc/article/details/7710738 ,转载请注明出处！
+<!--more-->
 
 ## 第一部分：一些常见的主键生成策略
 
@@ -44,7 +45,7 @@ comments: true
 
 flickr开发团队在2010年撰文介绍了flickr使用的一种主键生成测策略，同时表示该方案在flickr上的实际运行效果也非常令人满意，原文连接：Ticket Servers: Distributed Unique Primary Keys on the Cheap 这个方案是我目前知道的最好的方案，它与一般Sequence表方案有些类似，但却很好地解决了性能瓶颈和单点问题，是一种非常可靠而高效的全局主键生成方案。
 
-![图1.flickr采用的sharding主键生成方案示意图.jpg](3-图1.flickr采用的sharding主键生成方案示意图.jpg)
+![图1.flickr采用的sharding主键生成方案示意图.jpg](/img/3-图1.flickr采用的sharding主键生成方案示意图.jpg)
 
 图1. flickr采用的sharding主键生成方案示意图(点击查看大图)
 

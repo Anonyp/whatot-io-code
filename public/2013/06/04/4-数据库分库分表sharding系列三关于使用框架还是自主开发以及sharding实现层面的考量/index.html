@@ -37,7 +37,9 @@
     
       <li><a href="/">Home</a></li>
     
-      <li><a href="/archives">Archives</a></li>
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/about">关于</a></li>
     
   </ul>
   <div class="clearfix"></div>
@@ -70,10 +72,12 @@
 <li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
 <li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
 </ul>
-<p>当团队对系统业务和数据库进行了细致的梳理，确定了切分方案后，接下来的问题就是如何去实现切分方案了，目前在sharding方面有不少的开源框架和产品可供参考，同时很多团队也会选择自主开发实现，而不管是选择框架还是自主开发，都会面临一个在哪一层上实现sharding逻辑的问题，本文会对这一系列的问题逐一进行分析和考量。本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7766508">http://blog.csdn.net/bluishglc/article/details/7766508</a> 转载请注明出处！</p>
+<p>当团队对系统业务和数据库进行了细致的梳理，确定了切分方案后，接下来的问题就是如何去实现切分方案了，目前在sharding方面有不少的开源框架和产品可供参考，同时很多团队也会选择自主开发实现，而不管是选择框架还是自主开发，都会面临一个在哪一层上实现sharding逻辑的问题，本文会对这一系列的问题逐一进行分析和考量。
+本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7766508">http://blog.csdn.net/bluishglc/article/details/7766508</a> 转载请注明出处！
+<a name="more"></a></p>
 <h2>一、sharding逻辑的实现层面</h2>
 <p>从一个系统的程序架构层面来看，sharding逻辑可以在DAO层、JDBC API层、介于DAO与JDBC之间的Spring数据访问封装层(各种spring的template)以及介于应用服务器与数据库之间的sharding代理服务器四个层面上实现。</p>
-<p><img src="4-图1.Sharding实现层面与相关框架-产品.jpg" alt="4-图1.Sharding实现层面与相关框架-产品.jpg"></p>
+<p><img src="/img/4-图1.Sharding实现层面与相关框架-产品.jpg" alt="4-图1.Sharding实现层面与相关框架-产品.jpg"></p>
 <p>图1. Sharding实现层面与相关框架/产品</p>
 <h3>1. 在DAO层实现</h3>
 <p>当团队决定自行实现sharding的时候，DAO层可能是嵌入sharding逻辑的首选位置，因为在这个层面上，每一个DAO的方法都明确地知道需要访问的数据表以及查询参数，借助这些信息可以直接定位到目标shard上，而不必像框架那样需要对SQL进行解析然后再依据配置的规则进行路由。另一个优势是不会受ORM框架的制约。由于现在的大多数应用在数据访问层上会依赖某种ORM框架，而多数的shrading框架往往无法支持或只能支持一种orm框架，这使得在选择和应用框架时受到了很大的制约，而自行实现sharding完全没有这方面的问题，甚至不同的shard使用不同的orm框架都可以在一起协调工作。比如现在的java应用大多使用hibernate，但是当下还没有非常令人满意的基于hibernate的sharding框架，（关于hibernate hards会在下文介绍），因此很多团队会选择自行实现sharding。</p>
@@ -162,9 +166,7 @@
   <h3 class="title">标签</h3>
   <ul class="entry">
   
-    <li><a href="/tags/c-1/">c</a><small>1</small></li>
-  
-    <li><a href="/tags/c-language/">c language</a><small>1</small></li>
+    <li><a href="/tags/c/">c</a><small>1</small></li>
   
     <li><a href="/tags/database/">database</a><small>6</small></li>
   
@@ -175,6 +177,12 @@
 
 
   
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/database/" style="font-size: 16.67px;">database</a><a href="/tags/language/" style="font-size: 13.33px;">language</a>
+  </div>
+</div>
 
 </aside>
     <div class="clearfix"></div>

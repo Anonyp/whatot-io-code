@@ -12,11 +12,12 @@ comments: true
 
 本文着重介绍sharding切分策略，如果你对数据库sharding缺少基本的了解，请参考我另一篇从基础理论全面介绍sharding的文章：
 [数据库Sharding的基本思想和切分策略](http://blog.csdn.net/bluishglc/article/details/6161475)
+<!--more-->
 
 
 ## 第一部分：实施策略
 
-![图1.数据库分库分表(sharding)实施策略图解](2-图1.数据库sharding实施策略图解.jpg)
+![图1.数据库分库分表(sharding)实施策略图解](/img/2-图1.数据库sharding实施策略图解.jpg)
 
 图1.数据库分库分表(sharding)实施策略图解
 
@@ -56,13 +57,13 @@ SVN地址为：
 
 关于jpetstore的业务逻辑这里不再介绍，这是一个非常简单的电商系统原型，其领域模型如下图：
 
-![图2.jpetstore领域模型.jpg](2-图2.jpetstore领域模型.jpg)
+![图2.jpetstore领域模型.jpg](/img/2-图2.jpetstore领域模型.jpg)
 
 图2. jpetstore领域模型
 
 由于系统较简单，我们很容易从模型上看出，其主要由三个模块组成：用户，产品和订单。那么垂直切分的方案也就出来了。接下来看水平切分，如果我们从一个实际的宠物店出发考虑，可能出现数据激增的单表应该是Account和Order,因此这两张表需要进行水平切分。对于Product模块来说，如果是一个实际的系统，Product和Item的数量都不会很大，因此只做垂直切分就足够了，也就是（Product，Category，Item，Iventory，Supplier）五张表在一个数据库结点上（没有水平切分，不会存在两个以上的数据库结点）。但是作为一个演示，我们假设产品模块也有大量的数据需要我们做水平切分，那么分析来看，这个模块要拆分出两个shard:一个是（Product（主），Category），另一个是（Item（主），Iventory，Supplier），同时，我们认为：这两个shard在数据增速上应该是相近的，且在业务上也很紧密，那么我们可以把这两个shard放在同一个数据库节点上，Item和Product数据在散列时取一样的模。根据前文介绍的图纸绘制方法，我们得到下面这张sharding示意图：
 
-![图3.jpetstore-sharding示意图.jpg](3-图3.jpetstore-sharding示意图.jpg)
+![图3.jpetstore-sharding示意图.jpg](/img/3-图3.jpetstore-sharding示意图.jpg)
 
 图3. jpetstore sharding示意图
 

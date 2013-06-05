@@ -37,7 +37,9 @@
     
       <li><a href="/">Home</a></li>
     
-      <li><a href="/archives">Archives</a></li>
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/about">关于</a></li>
     
   </ul>
   <div class="clearfix"></div>
@@ -72,7 +74,8 @@
 </ul>
 <p>本文将主要介绍一些常见的全局主键生成策略，然后重点介绍flickr使用的一种非常优秀的全局主键生成方案。关于分库分表(sharding)的拆分策略和实施细则，请参考该系列的前一篇文章：
 <a href="http://blog.csdn.net/bluishglc/article/details/7696085">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></p>
-<p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7710738">http://blog.csdn.net/bluishglc/article/details/7710738</a> ,转载请注明出处！</p>
+<p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7710738">http://blog.csdn.net/bluishglc/article/details/7710738</a> ,转载请注明出处！
+<a name="more"></a></p>
 <h2>第一部分：一些常见的主键生成策略</h2>
 <p>一旦数据库被切分到多个物理结点上，我们将不能再依赖数据库自身的主键生成机制。一方面，某个分区数据库自生成的ID无法保证在全局上是唯一的；另一方面，应用程序在插入数据之前需要先获得ID,以便进行SQL路由。目前几种可行的主键生成策略有：</p>
 <ol>
@@ -91,7 +94,7 @@
 <p>除此之外，还有一些方案，像对每个数据库结点分区段划分ID,以及网上的一些ID生成算法，因为缺少可操作性和实践检验，本文并不推荐。实际上，接下来，我们要介绍的是Fickr使用的一种主键生成方案，这个方案是目前我所知道的最优秀的一个方案，并且经受了实践的检验，可以为大多数应用系统所借鉴。</p>
 <h2>第二部分：一种极为优秀的主键生成策略</h2>
 <p>flickr开发团队在2010年撰文介绍了flickr使用的一种主键生成测策略，同时表示该方案在flickr上的实际运行效果也非常令人满意，原文连接：Ticket Servers: Distributed Unique Primary Keys on the Cheap 这个方案是我目前知道的最好的方案，它与一般Sequence表方案有些类似，但却很好地解决了性能瓶颈和单点问题，是一种非常可靠而高效的全局主键生成方案。</p>
-<p><img src="3-图1.flickr采用的sharding主键生成方案示意图.jpg" alt="图1.flickr采用的sharding主键生成方案示意图.jpg"></p>
+<p><img src="/img/3-图1.flickr采用的sharding主键生成方案示意图.jpg" alt="图1.flickr采用的sharding主键生成方案示意图.jpg"></p>
 <p>图1. flickr采用的sharding主键生成方案示意图(点击查看大图)</p>
 <p>flickr这一方案的整体思想是：建立两台以上的数据库ID生成服务器，每个服务器都有一张记录各表当前ID的Sequence表，但是Sequence中ID增长的步长是服务器的数量，起始值依次错开，这样相当于把ID的生成散列到了每个服务器节点上。例如：如果我们设置两台数据库ID生成服务器，那么就让一台的Sequence表的ID起始值为1,每次增长步长为2,另一台的Sequence表的ID起始值为2,每次增长步长也为2，那么结果就是奇数的ID都将从第一台服务器上生成，偶数的ID都从第二台服务器上生成，这样就将生成ID的压力均匀分散到两台服务器上，同时配合应用程序的控制，当一个服务器失效后，系统能自动切换到另一个服务器上获取ID，从而保证了系统的容错。</p>
 <p>关于这个方案，有几点细节这里再说明一下：</p>
@@ -177,9 +180,7 @@
   <h3 class="title">标签</h3>
   <ul class="entry">
   
-    <li><a href="/tags/c-1/">c</a><small>1</small></li>
-  
-    <li><a href="/tags/c-language/">c language</a><small>1</small></li>
+    <li><a href="/tags/c/">c</a><small>1</small></li>
   
     <li><a href="/tags/database/">database</a><small>6</small></li>
   
@@ -190,6 +191,12 @@
 
 
   
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/database/" style="font-size: 16.67px;">database</a><a href="/tags/language/" style="font-size: 13.33px;">language</a>
+  </div>
+</div>
 
 </aside>
     <div class="clearfix"></div>

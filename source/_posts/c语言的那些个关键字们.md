@@ -6,12 +6,9 @@ tags: [c, language]
 
 [C语言的那些个关键字们](http://blogread.cn/it/article/5844)
 
-
-最近感冒，昨天流着鼻涕去一直很想去的某M面试，居然还迟到了，一紧张，鼻涕不流了－ －#
-
-问的问题不难，都是基础，可是自己不争气，答的不怎么样，一直自诩C语言用的很不错，可是还是在基础上被鄙视－ －！都是那些个关键字们阿～今天，让我挨个把C的关键字给详细的整一整，加深一下印象～
-
 首先，C语言中到底有多少个关键字呢？木有错，ANSI C规定是32个！ 他们分别是：auto double int struct break else long switch case enum register typedef char extern return union const float short unsigned continue for signed void default goto sizeof volatile do if while static。
+
+<!--more-->
 
 别看那一堆了字母了，直接看下面的分类介绍：
 

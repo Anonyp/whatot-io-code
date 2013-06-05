@@ -37,7 +37,9 @@
     
       <li><a href="/">Home</a></li>
     
-      <li><a href="/archives">Archives</a></li>
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/about">关于</a></li>
     
   </ul>
   <div class="clearfix"></div>
@@ -48,386 +50,81 @@
 <h2 class="archive-title tag">database</h2>
 
 
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-06-04T02:06:01.000Z"><a href="/2013/06/04/6-数据库分库分表sharding系列五一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案/">6月 4 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/06/04/6-数据库分库分表sharding系列五一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><a href="http://blog.csdn.net/bluishglc/article/details/7970268">本文出处</a></p>
-<p>本系列相关文章：</p>
-<ul>
-<li>数据库Sharding的基本思想和切分策略</li>
-<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
-<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
-<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
-<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
-<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
-</ul>
-<p>版权声明：本文由本人撰写并发表于2012年9月份的《程序员》杂志，原文题目《一种支持自由规划的Sharding扩容方案——主打无须数据迁移和修改路由代码》，此处作为本系列的第五篇文章进行转载, 本文版权归《程序员》杂志所有，未经许可不得转载！</p>
-<p>作为一种数据存储层面上的水平伸缩解决方案，数据库Sharding技术由来已久，很多海量数据系统在其发展演进的历程中都曾经历过分库分表的Sharding改造阶段。简单地说，Sharding就是将原来单一数据库按照一定的规则进行切分，把数据分散到多台物理机（我们称之为Shard)上存储，从而突破单机限制，使系统能以Scale-Out的方式应对不断上涨的海量数据，但是这种切分对上层应用来说是透明的，多个物理上分布的数据库在逻辑上依然是一个库。实现Sharding需要解决一系列关键的技术问题，这些问题主要包括：切分策略、节点路由、全局主键生成、跨节点排序/分组/表关联、多数据源事务处理和数据库扩容等。关于这些问题可以参考笔者的博客专栏<a href="http://blog.csdn.net/column/details/sharding.html">http://blog.csdn.net/column/details/sharding.html</a> 本文将重点围绕“数据库扩容”进行深入讨论，并提出一种允许自由规划并能避免数据迁移和修改路由代码的Sharding扩容方案。</p>
-<h2>Sharding扩容——系统维护不能承受之重</h2>
-<p>任何Sharding系统，在上线运行一段时间后，数据就会积累到当前节点规模所能承载的上限，此时就需要对数据库进行扩容了，也就是增加新的物理结点来分摊数据。如果系统使用的是基于ID进行散列的路由方式，那么团队需要根据新的节点规模重新计算所有数据应处的目标Shard，并将其迁移过去，这对团队来说无疑是一个巨大的维护负担；而如果系统是按增量区间进行路由(如每1千万条数据或是每一个月的数据存放在一个节点上 )，虽然可以避免数据的迁移，却有可能带来“热点”问题，也就是近期系统的读写都集中在最新创建的节点上(很多系统都有此类特点：新生数据的读写频率明显高于旧有数据)，从而影响了系统性能。面对这种两难的处境，Sharding扩容显得异常困难。</p>
-<p>一般来说，“理想”的扩容方案应该努力满足以下几个要求：</p>
-<ul>
-<li>最好不迁移数据 （无论如何，数据迁移都是一个让团队压力山大的问题）</li>
-<li>允许根据硬件资源自由规划扩容规模和节点存储负载</li>
-<li>能均匀的分布数据读写，避免“热点”问题</li>
-<li>保证对已经达到存储上限的节点不再写入数据</li>
-</ul>
-<p>目前，能够避免数据迁移的优秀方案并不多，相对可行的有两种，一种是维护一张记录数据ID和目标Shard对应关系的映射表，写入时，数据都写入新扩容的Shard，同时将ID和目标节点写入映射表，读取时，先查映射表，找到目标Shard后再执行查询。该方案简单有效，但是读写数据都需要访问两次数据库，且映射表本身也极易成为性能瓶颈。为此系统不得不引入分布式缓存来缓存映射表数据，但是这样也无法避免在写入时访问两次数据库，同时大量映射数据对缓存资源的消耗以及专门为此而引入分布式缓存的代价都是需要权衡的问题。另一种方案来自淘宝综合业务平台团队，它利用对2的倍数取余具有向前兼容的特性（如对4取余得1的数对2取余也是1）来分配数据，避免了行级别的数据迁移，但是依然需要进行表级别的迁移，同时对扩容规模和分表数量都有限制。总得来说，这些方案都不是十分的理想，多多少少都存在一些缺点，这也从一个侧面反映出了Sharding扩容的难度。</p>
-<h2>取长补短，兼容并包——一种理想的Sharding扩容方案</h2>
-<p>如前文所述，Sharding扩容与系统采用的路由规则密切相关：基于散列的路由能均匀地分布数据，但却需要数据迁移，同时也无法避免对达到上限的节点不再写入新数据；基于增量区间的路由天然不存在数据迁移和向某一节点无上限写入数据的问题，但却存在“热点”困扰。我们设计方案的初衷就是希望能结合两种路由规则的优势，摒弃各自的劣势，创造出一种接近“理想”状态的扩容方式，而这种方式简单概括起来就是：全局按增量区间分布数据，使用增量扩容，无数据迁移，局部使用散列方式分散数据读写，解决“热点”问题，同时对Sharding拓扑结构进行建模，使用一致的路由算法，扩容时只需追加节点数据，不再修改散列逻辑代码。</p>
-<h3>原理</h3>
-<p>首先，作为方案的基石，为了能使系统感知到Shard并基于Shard的分布进行路由计算，我们需要建立一个可以描述Sharding拓扑结构的编程模型。按照一般的切分原则，一个单一的数据库会首先进行垂直切分，垂直切分只是将关系密切的表划分在一起，我们把这样分出的一组表称为一个Partition。 接下来，如果Partition里的表数据量很大且增速迅猛，就再进行水平切分，水平切分会将一张表的数据按增量区间或散列方式分散到多个Shard上存储。在我们的方案里，我们使用增量区间与散列相结合的方式，全局上，数据按增量区间分布，但是每个增量区间并不是按照某个Shard的存储规模划分的，而是根据一组Shard的存储总量来确定的，我们把这样的一组Shard称为一个ShardGroup，局部上，也就是一个ShardGroup内，记录会再按散列方式均匀分布到组内各Shard上。这样，一条数据的路由会先根据其ID所处的区间确定ShardGroup，然后再通过散列命中ShardGroup内的某个目标Shard。在每次扩容时，我们会引入一组新的Shard，组成一个新的ShardGroup，为其分配增量区间并标记为“可写入”，同时将原有ShardGroup标记为“不可写入”，于是新生数据就会写入新的ShardGroup，旧有数据不需要迁移。同时，在ShardGroup内部各Shard之间使用散列方式分布数据读写，进而又避免了“热点”问题。最后，在Shard内部，当单表数据达到一定上限时，表的读写性能就开始大幅下滑，但是整个数据库并没有达到存储和负载的上限，为了充分发挥服务器的性能，我们通常会新建多张结构一样的表，并在新表上继续写入数据，我们把这样的表称为“分段表”（Fragment Table）。不过，引入分段表后所有的SQL在执行前都需要根据ID将其中的表名替换成真正的分段表名，这无疑增加了实现Sharding的难度，如果系统再使用了某种ORM框架，那么替换起来可能会更加困难。目前很多数据库提供一种与分段表类似的“分区”机制，但没有分段表的副作用，团队可以根据系统的实现情况在分段表和分区机制中灵活选择。总之，基于上述切分原理，我们将得到如下Sharding拓扑结构的领域模型：</p>
-<p><img src="6-图1.Sharding拓扑结构领域模型.jpg" alt="6-图1.Sharding拓扑结构领域模型.jpg"></p>
-<p>图1. Sharding拓扑结构领域模型</p>
-<p>在这个模型中，有几个细节需要注意：ShardGroup的writable属性用于标识该ShardGroup是否可以写入数据，一个Partition在任何时候只能有一个ShardGroup是可写的，这个ShardGroup往往是最近一次扩容引入的；startId和endId属性用于标识该ShardGroup的ID增量区间；Shard的hashValue属性用于标识该Shard节点接受哪些散列值的数据；FragmentTable的startId和endId是用于标识该分段表储存数据的ID区间。</p>
-<p>确立上述模型后，我们需要通过配置文件或是在数据库中建立与之对应的表来存储节点元数据，这样，整个存储系统的拓扑结构就可以被持久化起来，系统启动时就能从配置文件或数据库中加载出当前的Sharding拓扑结构进行路由计算了（如果结点规模并不大可以使用配置文件，如果节点规模非常大，需要建立相关表结构存储这些结点元数据。从最新的Oracle发布的《面向大规模可伸缩网站基础设施的MySQL参考架构》白皮书一文的“超大型系统架构参考”章节给出的架构图中我们可以看到一种名为：Shard Catalog的专用服务器，这个其实是保存结点配置信息的数据库），扩容时只需要向对应的文件或表中加入相关的节点信息重启系统即可，不需要修改任何路由逻辑代码。</p>
-<h3>示例</h3>
-<p>让我们通过示例来了解这套方案是如何工作的。</p>
-<h4>阶段一：初始上线</h4>
-<p>假设某系统初始上线，规划为某表提供4000W条记录的存储能力，若单表存储上限为1000W条，单库存储上限为2000W条，共需2个Shard，每个Shard包含两个分段表，ShardGroup增量区间为0-4000W，按2取余分散到2个Shard上，具体规划方案如下：</p>
-<p><img src="6-图2.初始4000W存储规模的规划方案.jpg" alt="6-图2.初始4000W存储规模的规划方案.jpg"></p>
-<p>图2. 初始4000W存储规模的规划方案</p>
-<p>与之相适应，Sharding拓扑结构的元数据如下：</p>
-<p><img src="6-图3.对应Sharding元数据.jpg" alt="6-图3.对应Sharding元数据.jpg"></p>
-<p>图3. 对应Sharding元数据</p>
-<h4>阶段二：系统扩容</h4>
-<p>经过一段时间的运行，当原表总数据逼近4000W条上限时，系统就需要扩容了。为了演示方案的灵活性，我们假设现在有三台服务器Shard2、Shard3、Shard4，其性能和存储能力表现依次为
-Shard2 &lt; Shard3 &lt; Shard4，
-我们安排Shard2储存1000W条记录，Shard3储存2000W条记录，Shard4储存3000W条记录，这样，该表的总存储能力将由扩容前的4000W条提升到10000W条，以下是详细的规划方案：</p>
-<p><img src="6-图4.二次扩容6000W存储规模的规划方案.jpg" alt="6-图4.二次扩容6000W存储规模的规划方案.jpg"></p>
-<p>图4. 二次扩容6000W存储规模的规划方案</p>
-<p>相应拓扑结构表数据下：</p>
-<p><img src="6-图5.对应Sharding元数据.jpg" alt="6-图5.对应Sharding元数据.jpg"></p>
-<p>图5. 对应Sharding元数据</p>
-<p>从这个扩容案例中我们可以看出该方案允许根据硬件情况进行灵活规划，对扩容规模和节点数量没有硬性规定，是一种非常自由的扩容方案。</p>
-<h4>增强</h4>
-<p>接下来让我们讨论一个高级话题：对“再生”存储空间的利用。对于大多数系统来说，历史数据较为稳定，被更新或是删除的概率并不高，反映到数据库上就是历史Shard的数据量基本保持恒定，但也不排除某些系统其数据有同等的删除概率，甚至是越老的数据被删除的可能性越大，这样反映到数据库上就是历史Shard随着时间的推移，数据量会持续下降，在经历了一段时间后，节点就会腾出很大一部分存储空间，我们把这样的存储空间叫“再生”存储空间，如何有效利用再生存储空间是这些系统在设计扩容方案时需要特别考虑的。回到我们的方案，实际上我们只需要在现有基础上进行一个简单的升级就可以实现对再生存储空间的利用，升级的关键就是将过去ShardGroup和FragmentTable的单一的ID区间提升为多重ID区间。为此我们把ShardGroup和FragmentTable的ID区间属性抽离出来，分别用ShardGroupInterval和FragmentTableIdInterval表示，并和它们保持一对多关系。</p>
-<p><img src="6-图6.增强后的Sharding拓扑结构领域模型.jpg" alt="6-图6.增强后的Sharding拓扑结构领域模型.jpg"></p>
-<p>图6. 增强后的Sharding拓扑结构领域模型</p>
-<p>让我们还是通过一个示例来了解升级后的方案是如何工作的。</p>
-<h4>阶段三：不扩容，重复利用再生存储空间</h4>
-<p>假设系统又经过一段时间的运行之后，二次扩容的6000W条存储空间即将耗尽，但是由于系统自身的特点，早期的很多数据被删除，Shard0和Shard1又各自腾出了一半的存储空间，于是ShardGroup0总计有2000W条的存储空间可以重新利用。为此，我们重新将ShardGroup0标记为writable=true，并给它追加一段ID区间：10000W-12000W，进而得到如下规划方案：</p>
-<p><img src="6-图7.重复利用2000W再生存储空间的规划方案.jpg" alt="6-图7.重复利用2000W再生存储空间的规划方案.jpg"></p>
-<p>图7. 重复利用2000W再生存储空间的规划方案</p>
-<p>相应拓扑结构的元数据如下：</p>
-<p><img src="6-图8.对应Sharding元数据.jpg" alt="6-图8.对应Sharding元数据.jpg"></p>
-<p>图8. 对应Sharding元数据</p>
-<p>小结</p>
-<p>这套方案综合利用了增量区间和散列两种路由方式的优势，避免了数据迁移和“热点”问题，同时，它对Sharding拓扑结构建模，使用了一致的路由算法，从而避免了扩容时修改路由代码，是一种理想的Sharding扩容方案。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+  <div class="archive">
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2013-06-04T02:06:01.000Z"><a href="/2013/06/04/6-数据库分库分表sharding系列五一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案/">6月 4 2013</a></time>
+            
+              <h1 class="title"><a href="/2013/06/04/6-数据库分库分表sharding系列五一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2013-06-04T02:05:01.000Z"><a href="/2013/06/04/5-数据库分库分表sharding系列四多数据源的事务处理/">6月 4 2013</a></time>
+            
+              <h1 class="title"><a href="/2013/06/04/5-数据库分库分表sharding系列四多数据源的事务处理/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2013-06-04T02:04:01.000Z"><a href="/2013/06/04/4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">6月 4 2013</a></time>
+            
+              <h1 class="title"><a href="/2013/06/04/4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2013-06-04T02:03:01.000Z"><a href="/2013/06/04/3-数据库分库分表sharding系列二全局主键生成策略/">6月 4 2013</a></time>
+            
+              <h1 class="title"><a href="/2013/06/04/3-数据库分库分表sharding系列二全局主键生成策略/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2013-06-04T02:02:01.000Z"><a href="/2013/06/04/2-数据库分库分表sharding系列一-拆分实施策略和示例演示/">6月 4 2013</a></time>
+            
+              <h1 class="title"><a href="/2013/06/04/2-数据库分库分表sharding系列一-拆分实施策略和示例演示/">2-数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2013-06-04T02:01:01.000Z"><a href="/2013/06/04/1-数据库Sharding的基本思想和切分策略/">6月 4 2013</a></time>
+            
+              <h1 class="title"><a href="/2013/06/04/1-数据库Sharding的基本思想和切分策略/">1-数据库Sharding的基本思想和切分策略</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
   </div>
-</article>
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-06-04T02:05:01.000Z"><a href="/2013/06/04/5-数据库分库分表sharding系列四多数据源的事务处理/">6月 4 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/06/04/5-数据库分库分表sharding系列四多数据源的事务处理/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><a href="http://blog.csdn.net/bluishglc/article/details/7793172">本文出处</a></p>
-<p>本系列相关文章：</p>
-<ul>
-<li>数据库Sharding的基本思想和切分策略</li>
-<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
-<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
-<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
-<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
-<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
-</ul>
-<p>系统经sharding改造之后，原来单一的数据库会演变成多个数据库，如何确保多数据源同时操作的原子性和一致性是不得不考虑的一个问题。总体上看，目前对于一个分布式系统的事务处理有三种方式：分布式事务、基于Best Efforts 1PC模式的事务以及事务补偿机制。我们下面对这三种处理方式一一进行分析。</p>
-<p>本文原文链接：<a href="http://blog.csdn.net/bluishglc/article/details/7793172">http://blog.csdn.net/bluishglc/article/details/7793172</a> 转载请注明出处！</p>
-<h2>分布式事务</h2>
-<p>这是最为人们所熟知的多数据源事务处理机制。本文并不打算对分布式事务做过多介绍，读者可参考此文：关于分布式事务、两阶段提交、一阶段提交、Best Efforts 1PC模式和事务补偿机制的研究 。在这里只想对分布式事务的利弊作一下分析。</p>
-<h3>优势：</h3>
-<pre><code><figure class="highlight"><pre><span class="bullet">1. </span>基于两阶段提交，最大限度地保证了跨数据库操作的“原子性”，是分布式系统下最严格的事务实现方式。
-<span class="bullet">2. </span>实现简单，工作量小。由于多数应用服务器以及一些独立的分布式事务协调器做了大量的封装工作，使得项目中引入分布式事务的难度和工作量基本上可以忽略不计。
-</pre></figure></code></pre>
-<h3>劣势：</h3>
-<pre><code><figure class="highlight"><pre>系统“水平”伸缩的死敌。基于两阶段提交的分布式事务在提交事务时需要在多个节点之间进行协调,最大限度地推后了提交事务的时间点，客观上延长了事务的执行时间，这会导致事务在访问共享资源时发生冲突和死锁的概率增高，随着数据库节点的增多，这种趋势会越来越严重，从而成为系统在数据库层面上水平伸缩的"枷锁"， 这是很多Sharding系统不采用分布式事务的主要原因。
-</pre></figure></code></pre>
-<h2>基于Best Efforts 1PC模式的事务</h2>
-<p>与分布式事务采用的两阶段提交不同，Best Efforts 1PC模式采用的是一阶段端提交，牺牲了事务在某些特殊情况(当机、网络中断等)下的安全性，却获得了良好的性能，特别是消除了对水平伸缩的桎酷。</p>
-<p><a href="http://www.javaworld.com/javaworld/jw-01-2009/jw-01-spring-transactions.html?page=5">Distributed transactions in Spring, with and withoutXA</a>
-一文对Best Efforts 1PC模式进行了详细的说明，该文提供的Demo代码更是直接给出了在Spring环境下实现一阶段提交的多数据源事务管理示例。
-不过需要注意的是，原示例是基于spring 3.0之前的版本，如果你使用spring 3.0+,会得到如下错误：java.lang.IllegalStateException: Cannot activate transaction synchronization - already active，如果使用spring 3.0+，你需要参考
-<a href="https://github.com/SpringSource/spring-data-graph/blob/master/spring-data-neo4j/src/main/java/org/springframework/data/neo4j/transaction/ChainedTransactionManager.java">spring-data-neo4j</a>
-的实现。鉴于Best Efforts 1PC模式的性能优势，以及相对简单的实现方式，它被大多数的sharding框架和项目采用。</p>
-<h2>事务补偿机制</h2>
-<p>对于那些对性能要求很高，但对一致性要求并不高的系统，往往并不苛求系统的实时一致性，只要在一个允许的时间周期内达到最终一致性即可，这使得事务补偿机制成为一种可行的方案。事务补偿机制最初被提出是在“长事务”的处理中，但是对于分布式系统确保一致性也有很好的参考意义。笼统地讲，与事务在执行中发生错误后立即回滚的方式不同，事务补偿是一种事后检查并补救的措施，它只期望在一个容许时间周期内得到最终一致的结果就可以了。事务补偿的实现与系统业务紧密相关，并没有一种标准的处理方式。一些常见的实现方式有：对数据进行对帐检查;基于日志进行比对;定期同标准数据来源进行同步，等等。</p>
-<h2>小结</h2>
-<p>分布式事务，最严格的事务实现，但性能是个大问题;Best Efforts 1PC模式，性能与事务可靠性的平衡，支持系统水平伸缩，大多数情况下是最合适的选择;事务补偿机制，只能适用于对事务性要求不高，允许数据“最终一致”即可的系统，牺牲实时一致性，获得最大的性能回报。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-06-04T02:04:01.000Z"><a href="/2013/06/04/4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">6月 4 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/06/04/4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><a href="http://blog.csdn.net/bluishglc/article/details/7766508">本文出处</a></p>
-<p>本系列相关文章：</p>
-<ul>
-<li>数据库Sharding的基本思想和切分策略</li>
-<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
-<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
-<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
-<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
-<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
-</ul>
-<p>当团队对系统业务和数据库进行了细致的梳理，确定了切分方案后，接下来的问题就是如何去实现切分方案了，目前在sharding方面有不少的开源框架和产品可供参考，同时很多团队也会选择自主开发实现，而不管是选择框架还是自主开发，都会面临一个在哪一层上实现sharding逻辑的问题，本文会对这一系列的问题逐一进行分析和考量。本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7766508">http://blog.csdn.net/bluishglc/article/details/7766508</a> 转载请注明出处！</p>
-<h2>一、sharding逻辑的实现层面</h2>
-<p>从一个系统的程序架构层面来看，sharding逻辑可以在DAO层、JDBC API层、介于DAO与JDBC之间的Spring数据访问封装层(各种spring的template)以及介于应用服务器与数据库之间的sharding代理服务器四个层面上实现。</p>
-<p><img src="4-图1.Sharding实现层面与相关框架-产品.jpg" alt="4-图1.Sharding实现层面与相关框架-产品.jpg"></p>
-<p>图1. Sharding实现层面与相关框架/产品</p>
-<h3>1. 在DAO层实现</h3>
-<p>当团队决定自行实现sharding的时候，DAO层可能是嵌入sharding逻辑的首选位置，因为在这个层面上，每一个DAO的方法都明确地知道需要访问的数据表以及查询参数，借助这些信息可以直接定位到目标shard上，而不必像框架那样需要对SQL进行解析然后再依据配置的规则进行路由。另一个优势是不会受ORM框架的制约。由于现在的大多数应用在数据访问层上会依赖某种ORM框架，而多数的shrading框架往往无法支持或只能支持一种orm框架，这使得在选择和应用框架时受到了很大的制约，而自行实现sharding完全没有这方面的问题，甚至不同的shard使用不同的orm框架都可以在一起协调工作。比如现在的java应用大多使用hibernate，但是当下还没有非常令人满意的基于hibernate的sharding框架，（关于hibernate hards会在下文介绍），因此很多团队会选择自行实现sharding。</p>
-<p>简单总结一下，在DAO层自行实现sharding的优势在于：不受ORM框架的制约、实现起来较为简单、易于根据系统特点进行灵活的定制、无需SQL解析和路由规则匹配，性能上表现会稍好一些;劣势在于：有一定的技术门槛，工作量比依靠框架实现要大(反过来看，框架会有学习成本)、不通用，只能在特定系统里工作。当然，在DAO层同样可以通过XML配置或是注解将sharding逻辑抽离到“外部”，形成一套通用的框架. 不过目前还没有出现此类的框架。</p>
-<h3>2. 在ORM框架层实现</h3>
-<p>在ORM框架层实现sharding有两个方向，</p>
-<p>一个是在实现O-R Mapping的前提下同时提供sharding支持，从而定位为一种分布式的数据访问框架，这一类类型的框架代表就是<a href="http://code.google.com/p/guzz/">guzz</a>
-另一个方向是通过对既有ORM框架进行修改增强来加入sharding机制。此类型的代表产品是<a href="http://www.hibernate.org/subprojects/shards.html">hibernate shard[</a>. 应该说以hibernate这样主流的地位，行业对于一款面向hibernate的sharding框架的需求是非常迫切的，但是就目前的hibernate shards来看，表现还算不上令人满意，主要是它对使用hibernate的限制过多，比如它对HQL的支持就非常有限。在mybatis方面，目前还没有成熟的相关框架产生。有人提出利用mybatis的插件机制实现sharding,但是遗憾的是，mybatis的插件机制控制不到多数据源的连接层面，另一方面，离开插件层又失去了对sql进行集中解析和路由的机会，因此在mybatis框架上，目前还没有可供借鉴的框架，团队可能要在DAO层或Spring模板类上下功夫了。</p>
-<h3>3. 在JDBC API层实现</h3>
-<p>JDBC API层是很多人都会想到的一个实现sharding的绝佳场所，如果我们能提供一个实现了sharding逻辑的JDBC API实现，那么sharding对于整个应用程序来说就是完全透明的，而这样的实现可以直接作为通用的sharding产品了。</p>
-<p>但是这种方案的技术门槛和工作量显然不是一般团队能做得来的，因此基本上没有团队会在这一层面上实现sharding,甚至也没有此类的开源产品。笔者知道的只有一款商业产品<a href="http://www.dbshards.com/">dbShards</a>采用的是这一方案。</p>
-<h3>4. 在介于DAO与JDBC之间的Spring数据访问封装层实现</h3>
-<p>在springd大行其道的今天，几乎没有哪个java平台上构建的应用不使用spring，在DAO与JDBC之间，spring提供了各种template来管理资源的创建与释放以及与事务的同步，大多数基于spring的应用都会使用template类做为数据访问的入口，这给了我们另一个嵌入sharding逻辑的机会，就是通过提供一个嵌入了sharding逻辑的template类来完成sharding工作.</p>
-<p>这一方案在效果上与基于JDBC API实现的方案基本一致，同样是对上层代码透明，在进行sharding改造时可以平滑地过度，但它的实现却比基于JDBC API的方式简单，
-因此成为了不少框架的选择，阿里集团研究院开源的<a href="http://write.blog.csdn.net/postedit/code.alibabatech.com/wiki/display/CobarClient/Home">Cobar Client</a>就是这类方案的一种实现。</p>
-<h3>5. 在应用服务器与数据库之间通过代理实现</h3>
-<p>在应用服务器与数据库之间加入一个代理，应用程序向数据发出的数据请求会先通过代理，代理会根据配置的路由规则，对SQL进行解析后路由到目标shard，因为这种方案对应用程序完全透明，通用性好，所以成为了很多sharding产品的选择。在这方面较为知名的产品是mysql官方的代理工具：<a href="http://dev.mysql.com/doc/refman/5.6/en/mysql-proxy.html">Mysql Proxy</a>和一款国人开发的产品:<a href="http://code.google.com/p/amoeba/">amoeba</a>。</p>
-<p>mysql proxy本身并没有实现任何sharding逻辑，它只是作为一种面向mysql数据库的代理，给开发人员提供了一个嵌入sharding逻辑的场所，它使用lua作为编程语言，这对很多团队来说是需要考虑的一个问题。amoeba则是专门实现读写分离与sharding的代理产品，它使用非常简单，不使用任何编程语言，只需要通过xml进行配置。不过amoeba不支持事务(从应用程序发出的包含事务信息的请求到达amoeba时，事务信息会被抹去，因此，即使是单点数据访问也不会有事务存在)一直是个硬伤。当然，这要看产品的定位和设计理念，我们只能说对于那些对事务要求非常高的系统，amoeba是不适合的。</p>
-<h2>二、使用框架还是自主开发？</h2>
-<p>前面的讨论中已经罗列了很多开源框架与产品，这里再整理一下：基于代理方式的有MySQL Proxy和Amoeba，基于Hibernate框架的是Hibernate Shards，通过重写spring的ibatis template类是Cobar Client，这些框架各有各的优势与短板，架构师可以在深入调研之后结合项目的实际情况进行选择，但是总的来说，我个人对于框架的选择是持谨慎态度的。一方面多数框架缺乏成功案例的验证，其成熟性与稳定性值得怀疑。另一方面，一些从成功商业产品开源出框架（如阿里和淘宝的一些开源项目）是否适合你的项目是需要架构师深入调研分析的。当然，最终的选择一定是基于项目特点、团队状况、技术门槛和学习成本等综合因素考量确定的。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-06-04T02:03:01.000Z"><a href="/2013/06/04/3-数据库分库分表sharding系列二全局主键生成策略/">6月 4 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/06/04/3-数据库分库分表sharding系列二全局主键生成策略/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><a href="http://blog.csdn.net/bluishglc/article/details/7710738">本文出处</a></p>
-<p>本系列相关文章：</p>
-<ul>
-<li>数据库Sharding的基本思想和切分策略</li>
-<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
-<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
-<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
-<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
-<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
-</ul>
-<p>本文将主要介绍一些常见的全局主键生成策略，然后重点介绍flickr使用的一种非常优秀的全局主键生成方案。关于分库分表(sharding)的拆分策略和实施细则，请参考该系列的前一篇文章：
-<a href="http://blog.csdn.net/bluishglc/article/details/7696085">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></p>
-<p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7710738">http://blog.csdn.net/bluishglc/article/details/7710738</a> ,转载请注明出处！</p>
-<h2>第一部分：一些常见的主键生成策略</h2>
-<p>一旦数据库被切分到多个物理结点上，我们将不能再依赖数据库自身的主键生成机制。一方面，某个分区数据库自生成的ID无法保证在全局上是唯一的；另一方面，应用程序在插入数据之前需要先获得ID,以便进行SQL路由。目前几种可行的主键生成策略有：</p>
-<ol>
-<li><p>UUID：使用UUID作主键是最简单的方案，但是缺点也是非常明显的。由于UUID非常的长，除占用大量存储空间外，最主要的问题是在索引上，在建立索引和基于索引进行查询时都存在性能问题。</p>
-</li>
-<li><p>结合数据库维护一个Sequence表：此方案的思路也很简单，在数据库中建立一个Sequence表，表的结构类似于：</p>
-<p> CREATE TABLE <code>SEQUENCE</code> (</p>
-<pre><code><figure class="highlight"><pre> `tablename` varchar(<span class="number">30</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,
- `nextid` bigint(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,
- PRIMARY KEY (`tablename`)
-</pre></figure></code></pre>
-<p> ) ENGINE=InnoDB</p>
-</li>
-</ol>
-<p>每当需要为某个表的新纪录生成ID时就从Sequence表中取出对应表的nextid,并将nextid的值加1后更新到数据库中以备下次使用。此方案也较简单，但缺点同样明显：由于所有插入任何都需要访问该表，该表很容易成为系统性能瓶颈，同时它也存在单点问题，一旦该表数据库失效，整个应用程序将无法工作。有人提出使用Master-Slave进行主从同步，但这也只能解决单点问题，并不能解决读写比为1:1的访问压力问题。</p>
-<p>除此之外，还有一些方案，像对每个数据库结点分区段划分ID,以及网上的一些ID生成算法，因为缺少可操作性和实践检验，本文并不推荐。实际上，接下来，我们要介绍的是Fickr使用的一种主键生成方案，这个方案是目前我所知道的最优秀的一个方案，并且经受了实践的检验，可以为大多数应用系统所借鉴。</p>
-<h2>第二部分：一种极为优秀的主键生成策略</h2>
-<p>flickr开发团队在2010年撰文介绍了flickr使用的一种主键生成测策略，同时表示该方案在flickr上的实际运行效果也非常令人满意，原文连接：Ticket Servers: Distributed Unique Primary Keys on the Cheap 这个方案是我目前知道的最好的方案，它与一般Sequence表方案有些类似，但却很好地解决了性能瓶颈和单点问题，是一种非常可靠而高效的全局主键生成方案。</p>
-<p><img src="3-图1.flickr采用的sharding主键生成方案示意图.jpg" alt="图1.flickr采用的sharding主键生成方案示意图.jpg"></p>
-<p>图1. flickr采用的sharding主键生成方案示意图(点击查看大图)</p>
-<p>flickr这一方案的整体思想是：建立两台以上的数据库ID生成服务器，每个服务器都有一张记录各表当前ID的Sequence表，但是Sequence中ID增长的步长是服务器的数量，起始值依次错开，这样相当于把ID的生成散列到了每个服务器节点上。例如：如果我们设置两台数据库ID生成服务器，那么就让一台的Sequence表的ID起始值为1,每次增长步长为2,另一台的Sequence表的ID起始值为2,每次增长步长也为2，那么结果就是奇数的ID都将从第一台服务器上生成，偶数的ID都从第二台服务器上生成，这样就将生成ID的压力均匀分散到两台服务器上，同时配合应用程序的控制，当一个服务器失效后，系统能自动切换到另一个服务器上获取ID，从而保证了系统的容错。</p>
-<p>关于这个方案，有几点细节这里再说明一下：</p>
-<ol>
-<li>flickr的数据库ID生成服务器是专用服务器，服务器上只有一个数据库，数据库中表都是用于生成Sequence的，这也是因为auto-increment-offset和auto-increment-increment这两个数据库变量是数据库实例级别的变量。</li>
-<li>flickr的方案中表格中的stub字段只是一个char(1) NOT NULL存根字段，并非表名，因此，一般来说，一个Sequence表只有一条纪录，可以同时为多张表生成ID，如果需要表的ID是有连续的，需要为该表单独建立Sequence表。</li>
-<li>方案使用了mysql的LAST_INSERT_ID()函数，这也决定了Sequence表只能有一条记录。</li>
-<li>使用REPLACE INTO插入数据，这是很讨巧的作法，主要是希望利用mysql自身的机制生成ID,不仅是因为这样简单，更是因为我们需要ID按照我们设定的方式(初值和步长)来生成。</li>
-<li>SELECT LAST_INSERT_ID()必须要于REPLACE INTO语句在同一个数据库连接下才能得到刚刚插入的新ID，否则返回的值总是0</li>
-<li>该方案中Sequence表使用的是MyISAM引擎，以获取更高的性能，注意：MyISAM引擎使用的是表级别的锁，MyISAM对表的读写是串行的，因此不必担心在并发时两次读取会得到同一个ID(另外，应该程序也不需要同步，每个请求的线程都会得到一个新的connection,不存在需要同步的共享资源)。经过实际对比测试，使用一样的Sequence表进行ID生成，MyISAM引擎要比InnoDB表现高出很多！</li>
-<li>可使用纯JDBC实现对Sequence表的操作，以便获得更高的效率，实验表明，即使只使用Spring JDBC性能也不及纯JDBC来得快！</li>
-</ol>
-<p>实现该方案，应用程序同样需要做一些处理，主要是两方面的工作：</p>
-<ol>
-<li>自动均衡数据库ID生成服务器的访问</li>
-<li>确保在某个数据库ID生成服务器失效的情况下，能将请求转发到其他服务器上执行。</li>
-</ol>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-06-04T02:02:01.000Z"><a href="/2013/06/04/2-数据库分库分表sharding系列一-拆分实施策略和示例演示/">6月 4 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/06/04/2-数据库分库分表sharding系列一-拆分实施策略和示例演示/">2-数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><a href="http://blog.csdn.net/bluishglc/article/details/7696085">本文出处</a></p>
-<p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7696085">http://blog.csdn.net/bluishglc/article/details/7696085</a> ,转载请注明出处！</p>
-<p>本文着重介绍sharding切分策略，如果你对数据库sharding缺少基本的了解，请参考我另一篇从基础理论全面介绍sharding的文章：
-<a href="http://blog.csdn.net/bluishglc/article/details/6161475">数据库Sharding的基本思想和切分策略</a></p>
-<h2>第一部分：实施策略</h2>
-<p><img src="2-图1.数据库sharding实施策略图解.jpg" alt="图1.数据库分库分表(sharding)实施策略图解"></p>
-<p>图1.数据库分库分表(sharding)实施策略图解</p>
-<h3>1.准备阶段</h3>
-<p>对数据库进行分库分表(Sharding化)前，需要开发人员充分了解系统业务逻辑和数据库schema.一个好的建议是绘制一张数据库ER图或领域模型图，以这类图为基础划分shard,直观易行，可以确保开发人员始终保持清醒思路。对于是选择数据库ER图还是领域模型图要根据项目自身情况进行选择。如果项目使用数据驱动的开发方式，团队以数据库ER图作为业务交流的基础，则自然会选择数据库ER图，如果项目使用的是领域驱动的开发方式，并通过OR-Mapping构建了一个良好的领域模型，那么领域模型图无疑是最好的选择。就我个人来说，更加倾向使用领域模型图，因为进行切分时更多的是以业务为依据进行分析判断，领域模型无疑更加清晰和直观。</p>
-<h3>2.分析阶段</h3>
-<h4>1. 垂直切分</h4>
-<p>垂直切分的依据原则是：将业务紧密，表间关联密切的表划分在一起，例如同一模块的表。结合已经准备好的数据库ER图或领域模型图，仿照活动图中的泳道概念，一个泳道代表一个shard，把所有表格划分到不同的泳道中。下面的分析示例会展示这种做法。当然，你也可以在打印出的ER图或模型图上直接用铅笔圈，一切取决于你自己的喜好。</p>
-<h4>2. 水平切分</h4>
-<p>垂直切分后，需要对shard内表格的数据量和增速进一步分析，以确定是否需要进行水平切分。</p>
-<p>2.1若划分到一起的表格数据增长缓慢，在产品上线后可遇见的足够长的时期内均可以由单一数据库承载，则不需要进行水平切分，所有表格驻留同一shard,所有表间关联关系会得到最大限度的保留，同时保证了书写SQL的自由度，不易受join、group by、order by等子句限制。</p>
-<p>2.2 若划分到一起的表格数据量巨大，增速迅猛，需要进一步进行水平分割。进一步的水平分割就这样进行：</p>
-<p>2.2.1.结合业务逻辑和表间关系，将当前shard划分成多个更小的shard,通常情况下，这些更小的shard每一个都只包含一个主表（将以该表ID进行散列的表）和多个与其关联或间接关联的次表。这种一个shard一张主表多张次表的状况是水平切分的必然结果。这样切分下来，shard数量就会迅速增多。如果每一个shard代表一个独立的数据库，那么管理和维护数据库将会非常麻烦，而且这些小shard往往只有两三张表，为此而建立一个新库，利用率并不高，因此，在水平切分完成后可再进行一次“反向的Merge”,即：将业务上相近，并且具有相近数据增长速率（主表数据量在同一数量级上）的两个或多个shard放到同一个数据库上，在逻辑上它们依然是独立的shard，有各自的主表，并依据各自主表的ID进行散列，不同的只是它们的散列取模（即节点数量）必需是一致的。这样，每个数据库结点上的表格数量就相对平均了。</p>
-<p>2.2.2. 所有表格均划分到合适的shard之后，所有跨越shard的表间关联都必须打断，在书写sql时，跨shard的join、group by、order by都将被禁止，需要在应用程序层面协调解决这些问题。</p>
-<p><strong>特别想提一点</strong>：经水平切分后，shard的粒度往往要比只做垂直切割的粒度要小，原单一垂直shard会被细分为一到多个以一个主表为中心关联或间接关联多个次表的shard，此时的shard粒度与领域驱动设计中的“聚合”概念不谋而合，甚至可以说是完全一致，每个shard的主表正是一个聚合中的聚合根！</p>
-<h3>3.实施阶段</h3>
-<p>如果项目在开发伊始就决定进行分库分表，则严格按照分析设计方案推进即可。如果是在中期架构演进中实施，除搭建实现sharding逻辑的基础设施外(关于该话题会在下篇文章中进行阐述)，还需要对原有SQL逐一过滤分析，修改那些因为sharding而受到影响的sql.</p>
-<h2>第二部分：示例演示</h2>
-<p>本文选择一个人尽皆知的应用：jpetstore来演示如何进行分库分表(sharding)在分析阶段的工作。由于一些个人原因，演示使用的jpetstore来自原ibatis官方的一个Demo版本，
-SVN地址为：
-<a href="http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5"><a href="http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5">http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5</a></a>。</p>
-<p>关于jpetstore的业务逻辑这里不再介绍，这是一个非常简单的电商系统原型，其领域模型如下图：</p>
-<p><img src="2-图2.jpetstore领域模型.jpg" alt="图2.jpetstore领域模型.jpg"></p>
-<p>图2. jpetstore领域模型</p>
-<p>由于系统较简单，我们很容易从模型上看出，其主要由三个模块组成：用户，产品和订单。那么垂直切分的方案也就出来了。接下来看水平切分，如果我们从一个实际的宠物店出发考虑，可能出现数据激增的单表应该是Account和Order,因此这两张表需要进行水平切分。对于Product模块来说，如果是一个实际的系统，Product和Item的数量都不会很大，因此只做垂直切分就足够了，也就是（Product，Category，Item，Iventory，Supplier）五张表在一个数据库结点上（没有水平切分，不会存在两个以上的数据库结点）。但是作为一个演示，我们假设产品模块也有大量的数据需要我们做水平切分，那么分析来看，这个模块要拆分出两个shard:一个是（Product（主），Category），另一个是（Item（主），Iventory，Supplier），同时，我们认为：这两个shard在数据增速上应该是相近的，且在业务上也很紧密，那么我们可以把这两个shard放在同一个数据库节点上，Item和Product数据在散列时取一样的模。根据前文介绍的图纸绘制方法，我们得到下面这张sharding示意图：</p>
-<p><img src="3-图3.jpetstore-sharding示意图.jpg" alt="图3.jpetstore-sharding示意图.jpg"></p>
-<p>图3. jpetstore sharding示意图</p>
-<p>对于这张图再说明几点：</p>
-<ol>
-<li>使用泳道表示物理shard（一个数据库结点）</li>
-<li>若垂直切分出的shard进行了进一步的水平切分，但公用一个物理shard的话，则用虚线框住，表示其在逻辑上是一个独立的shard。</li>
-<li>深色实体表示主表</li>
-<li>X表示需要打断的表间关联</li>
-</ol>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-  
-
-  <nav id="pagination">
-  
-  
-    <a href="/tags/database/page/2/" class="alignright next">下一页</a>
-  
-  <div class="clearfix"></div>
-</nav>
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
@@ -455,9 +152,7 @@ SVN地址为：
   <h3 class="title">标签</h3>
   <ul class="entry">
   
-    <li><a href="/tags/c-1/">c</a><small>1</small></li>
-  
-    <li><a href="/tags/c-language/">c language</a><small>1</small></li>
+    <li><a href="/tags/c/">c</a><small>1</small></li>
   
     <li><a href="/tags/database/">database</a><small>6</small></li>
   
@@ -468,6 +163,12 @@ SVN地址为：
 
 
   
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/database/" style="font-size: 16.67px;">database</a><a href="/tags/language/" style="font-size: 13.33px;">language</a>
+  </div>
+</div>
 
 </aside>
     <div class="clearfix"></div>
