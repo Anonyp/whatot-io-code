@@ -1,4 +1,6 @@
-whatot-io-code
-==============
+whatot.github.io
+================
 
-the code for whatot.github.io
+whatot blog build from [hexo](http://zespia.tw/hexo/zh-CN/)
+
+[whatot.github.io](whatot.github.io)

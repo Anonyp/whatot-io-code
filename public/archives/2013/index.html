@@ -1,0 +1,522 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>归档：2013 | Whatot 日常积累</title>
+  <meta name="author" content="whatot">
+  
+  <meta name="description" content="whatot blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Whatot 日常积累"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Whatot 日常积累</a></h1>
+  <h2><a href="/">积累每一天，无论是技术还是生活</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title">2013</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-05T02:38:45.000Z"><a href="/2013/06/05/c语言的那些个关键字们/">6月 5 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/06/05/c语言的那些个关键字们/">C语言的那些个关键字们</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://blogread.cn/it/article/5844">C语言的那些个关键字们</a></p>
+<p>最近感冒，昨天流着鼻涕去一直很想去的某M面试，居然还迟到了，一紧张，鼻涕不流了－ －#</p>
+<p>问的问题不难，都是基础，可是自己不争气，答的不怎么样，一直自诩C语言用的很不错，可是还是在基础上被鄙视－ －！都是那些个关键字们阿～今天，让我挨个把C的关键字给详细的整一整，加深一下印象～</p>
+<p>首先，C语言中到底有多少个关键字呢？木有错，ANSI C规定是32个！ 他们分别是：auto double int struct break else long switch case enum register typedef char extern return union const float short unsigned continue for signed void default goto sizeof volatile do if while static。</p>
+<p>别看那一堆了字母了，直接看下面的分类介绍：</p>
+<h2>第一类：数据类型关键字</h2>
+<p>这一类别的关键字有：</p>
+<pre><code><figure class="highlight"><pre><span class="keyword">char</span>          <span class="comment">//声明字符型变量或函数</span>
+<span class="keyword">double</span>       <span class="comment">//声明双精度变量或函数</span>
+<span class="keyword">enum</span>         <span class="comment">//声明枚举类型</span>
+<span class="keyword">float</span>          <span class="comment">//声明浮点型变量或函数</span>
+<span class="keyword">int</span>            <span class="comment">//声明整型变量或函数</span>
+<span class="keyword">long</span>          <span class="comment">//声明长整型变量或函数</span>
+<span class="keyword">short</span>         <span class="comment">//声明短整型变量或函数</span>
+<span class="keyword">signed</span>       <span class="comment">//声明有符号类型变量或函数</span>
+<span class="keyword">struct</span>        <span class="comment">//声明结构体变量或函数</span>
+<span class="keyword">union</span>         <span class="comment">//声明共用体数据类型</span>
+<span class="keyword">unsigned</span>     <span class="comment">//声明无符号类型变量或函数</span>
+<span class="keyword">void</span>           <span class="comment">//声明函数无返回值或无参数，声明无类型指针</span>
+</pre></figure></code></pre>
+<p>这一类别的关键字无需过多的说明，基本都是我们经常用到的，但是，仍然有些是我们需要注意的东西：</p>
+<ol>
+<li>C 标准并未定义指针、整数型（int）、长型（long）为特定的位数目。在32位体系结构下，一般int和long都是32位长；值得注意的是，64位机器下，很多程序设计环境，“int”变量仍然是 32 位宽，“long”和指针是 64 位宽。注意，这里说的只是一般情况下！详细的解释可以看这里。</li>
+<li>union声明的联合数据结构，里面的数据是共享内存的，可以看我的另一篇日志。</li>
+<li>unsigned声明的是一个无符号数据类型，也就是说，如果unsigned int i; 需要注意变量i永远不可能等于复数，除非强制类型转换。</li>
+</ol>
+<h2>第二类：控制语句关键字</h2>
+<pre><code><figure class="highlight"><pre><span class="keyword">for</span>         <span class="comment">//循环语句</span>
+<span class="keyword">do</span>         <span class="comment">//循环语句的循环体</span>
+<span class="keyword">while</span>      <span class="comment">//循环语句的循环条件</span>
+<span class="keyword">break</span>     <span class="comment">//跳出当前循环</span>
+<span class="keyword">continue</span> <span class="comment">//结束当前循环，开始下一次循环</span>
+<span class="keyword">if</span>           <span class="comment">//条件分支语句</span>
+<span class="keyword">else</span>       <span class="comment">//条件分支语句</span>
+<span class="keyword">goto</span>      <span class="comment">//无条件跳转语句</span>
+<span class="keyword">switch</span>    <span class="comment">//不解释</span>
+<span class="keyword">case</span>      <span class="comment">//不解释</span>
+<span class="keyword">default</span>    <span class="comment">//不解释</span>
+<span class="keyword">return</span>     <span class="comment">//返回语句</span>
+</pre></figure></code></pre>
+<p>这些关键字估计都快被用烂了吧？不解释！</p>
+<p>下面，开始做点有意义的事情，着重解释以下的关键字：</p>
+<h2>第三类：存储类型关键字</h2>
+<pre><code><figure class="highlight"><pre><span class="title">auto</span>
+<span class="title">extern</span>
+<span class="title">register</span>
+<span class="title">static</span>
+</pre></figure></code></pre>
+<p>让我们一一来看这四个关键字：</p>
+<ol>
+<li><p>auto关键字： 声明变量的生存期为自动，即将不在任何类、结构、枚举、联合和函数中定义的变量视为全局变量，而在函数中定义的变量视为局部变量。不明白？无视他好了，编译器默认的缺省情况下，所有的变量都是auto的。</p>
+</li>
+<li><p>extern关键字： 我们都知道，一个变量或函数，可以在a.c文件中定义，而在b.c文件中使用，这个时候，b.c就需要使用extern关键字来声明这个变量和函数，目的是为了告诉编译器，这个函数在b.c之外，别让我编译不过！</p>
+</li>
+<li><p>register关键字： 这个关键字就很少用到了，但是却十分有用。它的目的是告诉编译器尽量把这个变量放到寄存器中，这样提高存取速度，但是不是能真的放到寄存器中却不一定，毕竟寄存器的数量是有限的。在我们的二进制翻译器中，这个关键字被巧妙的用于线程切换。</p>
+</li>
+<li><p>static关键字： 好吧，我承认我土了，我就是栽在这个关键字上的。static有两种修饰，分别如下：</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>(1)修饰变量</strong>：变量分为全局变量和静态变量，都存储在内存的静态区中。</p>
+<p>首先，当static修饰全局变量的时候，该变量的作用域仅被限定在当前文件中，别的文件即使使用extern关键字也无法使用这个变量。</p>
+<p>其次，当static修饰局部变量的时候，该变量在哪个函数体中定义，就只能在哪个函数体中使用。也许你会说，这不跟普通局部变量一样么？不一样！别忘了他是被存储在内存的静态区中，所谓的静态区就是全局区，用来存放全局变量和静态变量的，程序不结束，这个区是不会被释放的，所以即使定义静态局部变量的函数结束，改静态局部变量仍然存在，下次访问改函数的时候，这个变量的值仍然是上次的值！举个例子把：</p>
+<pre><code><figure class="highlight"><pre>   void foo(){
+        static int i=<span class="number">0</span><span class="comment">;</span>
+        i++<span class="comment">;</span>
+        printf(<span class="string">"%d\n"</span>,i)<span class="comment">;</span>
+    }
+    int main(){
+        foo()<span class="comment">;</span>
+        foo()<span class="comment">;</span>
+    }
+</pre></figure></code></pre>
+<p>这个小例子的执行结果是什么呢？答案是：</p>
+<pre><code><figure class="highlight"><pre>   <span class="number">1</span>
+   <span class="number">2</span>
+</pre></figure></code></pre>
+<p>对的，静态局部变量只能被初始化一次，并且值会被保留，使用这个有两个好处，一个是可以计算函数被调用的次数，一个是可以减少函数构建局部变量的开销，自己体会一下把。</p>
+<p><strong>(2)修饰函数</strong>： 经常见这种形式，但没怎么用过，也就没去想。其实这个作用跟静态全局变量相似，也是限定函数的作用域为本文件。这样作的好处就是不用操心是否会跟别人编写的文件里的函数重名。（我这里栽了一下，太弱了～不甘心阿！）</p>
+</blockquote>
+<h2>第四类：其他关键字</h2>
+<pre><code><figure class="highlight"><pre><span class="title">const</span>
+<span class="title">sizeof</span>
+<span class="typedef">typedef</span>
+<span class="title">volatile</span>
+</pre></figure></code></pre>
+<p>下面，也是一样，一一解释下这些关键字：</p>
+<h3>1. const关键字：</h3>
+<p>这是一个很有意思的关键字，他修饰的变量是只读的，不能被修改；很多时候，编译器会将其优化成一个常量。const经常被用来修饰函数的参数，表示不希望这个参数值被函数体内的代码意外的改变。其实，最有意思的是用const修饰一个指针，让我们看下面这个例子：</p>
+<pre><code><figure class="highlight"><pre><span class="keyword">const</span> <span class="keyword">int</span> *p;   <span class="comment">//p可变，p指向的对象不可变</span>
+<span class="keyword">int</span> <span class="keyword">const</span> *p;   <span class="comment">//同上</span>
+<span class="keyword">int</span> *<span class="keyword">const</span> p;   <span class="comment">//p不可变，p指向的对象可变</span>
+<span class="keyword">const</span> <span class="keyword">int</span> *<span class="keyword">const</span> p; <span class="comment">//p和p指向的对象都不可变</span>
+</pre></figure></code></pre>
+<p>这些各表示什么呢？注释里面给出了答案！是不是很不好记？我们只需要记得，const修饰的是*p的时候，p指向的内容不可变；const修饰的是p的时候，p就不可变！</p>
+<h3>2. sizeof关键字：</h3>
+<p>很多人也许会大吃一斤，我类个去，sizeof居然是关键字？（高手请无视这里，我当初就是这种表现）。不错，sizeof确实是关键字，而不是库函数！所以，如果编译时得不到一个数组的大小，那么就不能使用sizeof关键字来获取改数组的大小！</p>
+<h3>3. typedef关键字：</h3>
+<p>typedef说白了就是给一个已知的类型起一个外号。让我们考虑一个问题：</p>
+<pre><code><figure class="highlight"><pre><span class="preprocessor">#<span class="keyword">define</span> PCHAR char*</span>
+typedef <span class="keyword">char</span>* pchar;
+</pre></figure></code></pre>
+<p>这两个语句都是给char*类型起一个别名，那么哪个比较好呢？ 要想知道答案，看下面：</p>
+<pre><code><figure class="highlight"><pre><span class="title">PCHAR</span> p1, p2;
+<span class="title">pchar</span> p3, p4;
+</pre></figure></code></pre>
+<p>看代码的意思，我们是想将p1,p2,p3,p4都赋成char*类型的，但是，事实是如此么？p2是么？</p>
+<p><strong>注意</strong>，p2并没有预期成为一个char<em>类型，因为define会在预编译阶段展开，所以语句1就相当于 char</em> p1, p2；而在这条语句下，p2不是一个指针，而是一个char类型的！这个错误经常会被忽略，所以一定要注意！</p>
+<h3>4. volatile关键字：</h3>
+<p>也许你见过这个关键字，但一般你都没有用过。哈哈，我用过！这个关键字表示改变量的值可能在外部被改变，编译器在用到这个变量时不能过度的优化，必须每次都重新从内存中读取这个变量的值，而不是将其优化在寄存器中。这个可以用来防止编译器优化产生的内存屏障，详细的看<a href="http://www.spongeliu.com/clanguage/memorybarrier/">这里</a>。</p>
+<p>好吧，32个关键字介绍完了，我自恃很了解，也从中学了不少东西，但愿下次不要再犯这种低级的错误！没关系，一切都会好起来的！Success is going from failure to failure without losing enthusiasm！</p>
+<p>参考书目：<a href="http://www.amazon.cn/gp/product/B003XF3GQO/">《C语言深度解剖:解开程序员面试笔试的秘密》</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-05T02:36:15.000Z"><a href="/2013/06/05/hello-world/">6月 5 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/06/05/hello-world/">Hello World</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Welcome to <a href="http://zespia.tw/hexo">Hexo</a>! This is your very first post. Check <a href="http://zespia.tw/hexo/docs">documentation</a> to learn how to use.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-04T02:06:01.000Z"><a href="/2013/06/04/6-数据库分库分表sharding系列五一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案/">6月 4 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/06/04/6-数据库分库分表sharding系列五一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://blog.csdn.net/bluishglc/article/details/7970268">本文出处</a></p>
+<p>本系列相关文章：</p>
+<ul>
+<li>数据库Sharding的基本思想和切分策略</li>
+<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
+<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
+<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
+<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
+<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
+</ul>
+<p>版权声明：本文由本人撰写并发表于2012年9月份的《程序员》杂志，原文题目《一种支持自由规划的Sharding扩容方案——主打无须数据迁移和修改路由代码》，此处作为本系列的第五篇文章进行转载, 本文版权归《程序员》杂志所有，未经许可不得转载！</p>
+<p>作为一种数据存储层面上的水平伸缩解决方案，数据库Sharding技术由来已久，很多海量数据系统在其发展演进的历程中都曾经历过分库分表的Sharding改造阶段。简单地说，Sharding就是将原来单一数据库按照一定的规则进行切分，把数据分散到多台物理机（我们称之为Shard)上存储，从而突破单机限制，使系统能以Scale-Out的方式应对不断上涨的海量数据，但是这种切分对上层应用来说是透明的，多个物理上分布的数据库在逻辑上依然是一个库。实现Sharding需要解决一系列关键的技术问题，这些问题主要包括：切分策略、节点路由、全局主键生成、跨节点排序/分组/表关联、多数据源事务处理和数据库扩容等。关于这些问题可以参考笔者的博客专栏<a href="http://blog.csdn.net/column/details/sharding.html">http://blog.csdn.net/column/details/sharding.html</a> 本文将重点围绕“数据库扩容”进行深入讨论，并提出一种允许自由规划并能避免数据迁移和修改路由代码的Sharding扩容方案。</p>
+<h2>Sharding扩容——系统维护不能承受之重</h2>
+<p>任何Sharding系统，在上线运行一段时间后，数据就会积累到当前节点规模所能承载的上限，此时就需要对数据库进行扩容了，也就是增加新的物理结点来分摊数据。如果系统使用的是基于ID进行散列的路由方式，那么团队需要根据新的节点规模重新计算所有数据应处的目标Shard，并将其迁移过去，这对团队来说无疑是一个巨大的维护负担；而如果系统是按增量区间进行路由(如每1千万条数据或是每一个月的数据存放在一个节点上 )，虽然可以避免数据的迁移，却有可能带来“热点”问题，也就是近期系统的读写都集中在最新创建的节点上(很多系统都有此类特点：新生数据的读写频率明显高于旧有数据)，从而影响了系统性能。面对这种两难的处境，Sharding扩容显得异常困难。</p>
+<p>一般来说，“理想”的扩容方案应该努力满足以下几个要求：</p>
+<ul>
+<li>最好不迁移数据 （无论如何，数据迁移都是一个让团队压力山大的问题）</li>
+<li>允许根据硬件资源自由规划扩容规模和节点存储负载</li>
+<li>能均匀的分布数据读写，避免“热点”问题</li>
+<li>保证对已经达到存储上限的节点不再写入数据</li>
+</ul>
+<p>目前，能够避免数据迁移的优秀方案并不多，相对可行的有两种，一种是维护一张记录数据ID和目标Shard对应关系的映射表，写入时，数据都写入新扩容的Shard，同时将ID和目标节点写入映射表，读取时，先查映射表，找到目标Shard后再执行查询。该方案简单有效，但是读写数据都需要访问两次数据库，且映射表本身也极易成为性能瓶颈。为此系统不得不引入分布式缓存来缓存映射表数据，但是这样也无法避免在写入时访问两次数据库，同时大量映射数据对缓存资源的消耗以及专门为此而引入分布式缓存的代价都是需要权衡的问题。另一种方案来自淘宝综合业务平台团队，它利用对2的倍数取余具有向前兼容的特性（如对4取余得1的数对2取余也是1）来分配数据，避免了行级别的数据迁移，但是依然需要进行表级别的迁移，同时对扩容规模和分表数量都有限制。总得来说，这些方案都不是十分的理想，多多少少都存在一些缺点，这也从一个侧面反映出了Sharding扩容的难度。</p>
+<h2>取长补短，兼容并包——一种理想的Sharding扩容方案</h2>
+<p>如前文所述，Sharding扩容与系统采用的路由规则密切相关：基于散列的路由能均匀地分布数据，但却需要数据迁移，同时也无法避免对达到上限的节点不再写入新数据；基于增量区间的路由天然不存在数据迁移和向某一节点无上限写入数据的问题，但却存在“热点”困扰。我们设计方案的初衷就是希望能结合两种路由规则的优势，摒弃各自的劣势，创造出一种接近“理想”状态的扩容方式，而这种方式简单概括起来就是：全局按增量区间分布数据，使用增量扩容，无数据迁移，局部使用散列方式分散数据读写，解决“热点”问题，同时对Sharding拓扑结构进行建模，使用一致的路由算法，扩容时只需追加节点数据，不再修改散列逻辑代码。</p>
+<h3>原理</h3>
+<p>首先，作为方案的基石，为了能使系统感知到Shard并基于Shard的分布进行路由计算，我们需要建立一个可以描述Sharding拓扑结构的编程模型。按照一般的切分原则，一个单一的数据库会首先进行垂直切分，垂直切分只是将关系密切的表划分在一起，我们把这样分出的一组表称为一个Partition。 接下来，如果Partition里的表数据量很大且增速迅猛，就再进行水平切分，水平切分会将一张表的数据按增量区间或散列方式分散到多个Shard上存储。在我们的方案里，我们使用增量区间与散列相结合的方式，全局上，数据按增量区间分布，但是每个增量区间并不是按照某个Shard的存储规模划分的，而是根据一组Shard的存储总量来确定的，我们把这样的一组Shard称为一个ShardGroup，局部上，也就是一个ShardGroup内，记录会再按散列方式均匀分布到组内各Shard上。这样，一条数据的路由会先根据其ID所处的区间确定ShardGroup，然后再通过散列命中ShardGroup内的某个目标Shard。在每次扩容时，我们会引入一组新的Shard，组成一个新的ShardGroup，为其分配增量区间并标记为“可写入”，同时将原有ShardGroup标记为“不可写入”，于是新生数据就会写入新的ShardGroup，旧有数据不需要迁移。同时，在ShardGroup内部各Shard之间使用散列方式分布数据读写，进而又避免了“热点”问题。最后，在Shard内部，当单表数据达到一定上限时，表的读写性能就开始大幅下滑，但是整个数据库并没有达到存储和负载的上限，为了充分发挥服务器的性能，我们通常会新建多张结构一样的表，并在新表上继续写入数据，我们把这样的表称为“分段表”（Fragment Table）。不过，引入分段表后所有的SQL在执行前都需要根据ID将其中的表名替换成真正的分段表名，这无疑增加了实现Sharding的难度，如果系统再使用了某种ORM框架，那么替换起来可能会更加困难。目前很多数据库提供一种与分段表类似的“分区”机制，但没有分段表的副作用，团队可以根据系统的实现情况在分段表和分区机制中灵活选择。总之，基于上述切分原理，我们将得到如下Sharding拓扑结构的领域模型：</p>
+<p><img src="6-图1.Sharding拓扑结构领域模型.jpg" alt="6-图1.Sharding拓扑结构领域模型.jpg"></p>
+<p>图1. Sharding拓扑结构领域模型</p>
+<p>在这个模型中，有几个细节需要注意：ShardGroup的writable属性用于标识该ShardGroup是否可以写入数据，一个Partition在任何时候只能有一个ShardGroup是可写的，这个ShardGroup往往是最近一次扩容引入的；startId和endId属性用于标识该ShardGroup的ID增量区间；Shard的hashValue属性用于标识该Shard节点接受哪些散列值的数据；FragmentTable的startId和endId是用于标识该分段表储存数据的ID区间。</p>
+<p>确立上述模型后，我们需要通过配置文件或是在数据库中建立与之对应的表来存储节点元数据，这样，整个存储系统的拓扑结构就可以被持久化起来，系统启动时就能从配置文件或数据库中加载出当前的Sharding拓扑结构进行路由计算了（如果结点规模并不大可以使用配置文件，如果节点规模非常大，需要建立相关表结构存储这些结点元数据。从最新的Oracle发布的《面向大规模可伸缩网站基础设施的MySQL参考架构》白皮书一文的“超大型系统架构参考”章节给出的架构图中我们可以看到一种名为：Shard Catalog的专用服务器，这个其实是保存结点配置信息的数据库），扩容时只需要向对应的文件或表中加入相关的节点信息重启系统即可，不需要修改任何路由逻辑代码。</p>
+<h3>示例</h3>
+<p>让我们通过示例来了解这套方案是如何工作的。</p>
+<h4>阶段一：初始上线</h4>
+<p>假设某系统初始上线，规划为某表提供4000W条记录的存储能力，若单表存储上限为1000W条，单库存储上限为2000W条，共需2个Shard，每个Shard包含两个分段表，ShardGroup增量区间为0-4000W，按2取余分散到2个Shard上，具体规划方案如下：</p>
+<p><img src="6-图2.初始4000W存储规模的规划方案.jpg" alt="6-图2.初始4000W存储规模的规划方案.jpg"></p>
+<p>图2. 初始4000W存储规模的规划方案</p>
+<p>与之相适应，Sharding拓扑结构的元数据如下：</p>
+<p><img src="6-图3.对应Sharding元数据.jpg" alt="6-图3.对应Sharding元数据.jpg"></p>
+<p>图3. 对应Sharding元数据</p>
+<h4>阶段二：系统扩容</h4>
+<p>经过一段时间的运行，当原表总数据逼近4000W条上限时，系统就需要扩容了。为了演示方案的灵活性，我们假设现在有三台服务器Shard2、Shard3、Shard4，其性能和存储能力表现依次为
+Shard2 &lt; Shard3 &lt; Shard4，
+我们安排Shard2储存1000W条记录，Shard3储存2000W条记录，Shard4储存3000W条记录，这样，该表的总存储能力将由扩容前的4000W条提升到10000W条，以下是详细的规划方案：</p>
+<p><img src="6-图4.二次扩容6000W存储规模的规划方案.jpg" alt="6-图4.二次扩容6000W存储规模的规划方案.jpg"></p>
+<p>图4. 二次扩容6000W存储规模的规划方案</p>
+<p>相应拓扑结构表数据下：</p>
+<p><img src="6-图5.对应Sharding元数据.jpg" alt="6-图5.对应Sharding元数据.jpg"></p>
+<p>图5. 对应Sharding元数据</p>
+<p>从这个扩容案例中我们可以看出该方案允许根据硬件情况进行灵活规划，对扩容规模和节点数量没有硬性规定，是一种非常自由的扩容方案。</p>
+<h4>增强</h4>
+<p>接下来让我们讨论一个高级话题：对“再生”存储空间的利用。对于大多数系统来说，历史数据较为稳定，被更新或是删除的概率并不高，反映到数据库上就是历史Shard的数据量基本保持恒定，但也不排除某些系统其数据有同等的删除概率，甚至是越老的数据被删除的可能性越大，这样反映到数据库上就是历史Shard随着时间的推移，数据量会持续下降，在经历了一段时间后，节点就会腾出很大一部分存储空间，我们把这样的存储空间叫“再生”存储空间，如何有效利用再生存储空间是这些系统在设计扩容方案时需要特别考虑的。回到我们的方案，实际上我们只需要在现有基础上进行一个简单的升级就可以实现对再生存储空间的利用，升级的关键就是将过去ShardGroup和FragmentTable的单一的ID区间提升为多重ID区间。为此我们把ShardGroup和FragmentTable的ID区间属性抽离出来，分别用ShardGroupInterval和FragmentTableIdInterval表示，并和它们保持一对多关系。</p>
+<p><img src="6-图6.增强后的Sharding拓扑结构领域模型.jpg" alt="6-图6.增强后的Sharding拓扑结构领域模型.jpg"></p>
+<p>图6. 增强后的Sharding拓扑结构领域模型</p>
+<p>让我们还是通过一个示例来了解升级后的方案是如何工作的。</p>
+<h4>阶段三：不扩容，重复利用再生存储空间</h4>
+<p>假设系统又经过一段时间的运行之后，二次扩容的6000W条存储空间即将耗尽，但是由于系统自身的特点，早期的很多数据被删除，Shard0和Shard1又各自腾出了一半的存储空间，于是ShardGroup0总计有2000W条的存储空间可以重新利用。为此，我们重新将ShardGroup0标记为writable=true，并给它追加一段ID区间：10000W-12000W，进而得到如下规划方案：</p>
+<p><img src="6-图7.重复利用2000W再生存储空间的规划方案.jpg" alt="6-图7.重复利用2000W再生存储空间的规划方案.jpg"></p>
+<p>图7. 重复利用2000W再生存储空间的规划方案</p>
+<p>相应拓扑结构的元数据如下：</p>
+<p><img src="6-图8.对应Sharding元数据.jpg" alt="6-图8.对应Sharding元数据.jpg"></p>
+<p>图8. 对应Sharding元数据</p>
+<p>小结</p>
+<p>这套方案综合利用了增量区间和散列两种路由方式的优势，避免了数据迁移和“热点”问题，同时，它对Sharding拓扑结构建模，使用了一致的路由算法，从而避免了扩容时修改路由代码，是一种理想的Sharding扩容方案。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-04T02:05:01.000Z"><a href="/2013/06/04/5-数据库分库分表sharding系列四多数据源的事务处理/">6月 4 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/06/04/5-数据库分库分表sharding系列四多数据源的事务处理/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://blog.csdn.net/bluishglc/article/details/7793172">本文出处</a></p>
+<p>本系列相关文章：</p>
+<ul>
+<li>数据库Sharding的基本思想和切分策略</li>
+<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
+<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
+<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
+<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
+<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
+</ul>
+<p>系统经sharding改造之后，原来单一的数据库会演变成多个数据库，如何确保多数据源同时操作的原子性和一致性是不得不考虑的一个问题。总体上看，目前对于一个分布式系统的事务处理有三种方式：分布式事务、基于Best Efforts 1PC模式的事务以及事务补偿机制。我们下面对这三种处理方式一一进行分析。</p>
+<p>本文原文链接：<a href="http://blog.csdn.net/bluishglc/article/details/7793172">http://blog.csdn.net/bluishglc/article/details/7793172</a> 转载请注明出处！</p>
+<h2>分布式事务</h2>
+<p>这是最为人们所熟知的多数据源事务处理机制。本文并不打算对分布式事务做过多介绍，读者可参考此文：关于分布式事务、两阶段提交、一阶段提交、Best Efforts 1PC模式和事务补偿机制的研究 。在这里只想对分布式事务的利弊作一下分析。</p>
+<h3>优势：</h3>
+<pre><code><figure class="highlight"><pre><span class="bullet">1. </span>基于两阶段提交，最大限度地保证了跨数据库操作的“原子性”，是分布式系统下最严格的事务实现方式。
+<span class="bullet">2. </span>实现简单，工作量小。由于多数应用服务器以及一些独立的分布式事务协调器做了大量的封装工作，使得项目中引入分布式事务的难度和工作量基本上可以忽略不计。
+</pre></figure></code></pre>
+<h3>劣势：</h3>
+<pre><code><figure class="highlight"><pre>系统“水平”伸缩的死敌。基于两阶段提交的分布式事务在提交事务时需要在多个节点之间进行协调,最大限度地推后了提交事务的时间点，客观上延长了事务的执行时间，这会导致事务在访问共享资源时发生冲突和死锁的概率增高，随着数据库节点的增多，这种趋势会越来越严重，从而成为系统在数据库层面上水平伸缩的"枷锁"， 这是很多Sharding系统不采用分布式事务的主要原因。
+</pre></figure></code></pre>
+<h2>基于Best Efforts 1PC模式的事务</h2>
+<p>与分布式事务采用的两阶段提交不同，Best Efforts 1PC模式采用的是一阶段端提交，牺牲了事务在某些特殊情况(当机、网络中断等)下的安全性，却获得了良好的性能，特别是消除了对水平伸缩的桎酷。</p>
+<p><a href="http://www.javaworld.com/javaworld/jw-01-2009/jw-01-spring-transactions.html?page=5">Distributed transactions in Spring, with and withoutXA</a>
+一文对Best Efforts 1PC模式进行了详细的说明，该文提供的Demo代码更是直接给出了在Spring环境下实现一阶段提交的多数据源事务管理示例。
+不过需要注意的是，原示例是基于spring 3.0之前的版本，如果你使用spring 3.0+,会得到如下错误：java.lang.IllegalStateException: Cannot activate transaction synchronization - already active，如果使用spring 3.0+，你需要参考
+<a href="https://github.com/SpringSource/spring-data-graph/blob/master/spring-data-neo4j/src/main/java/org/springframework/data/neo4j/transaction/ChainedTransactionManager.java">spring-data-neo4j</a>
+的实现。鉴于Best Efforts 1PC模式的性能优势，以及相对简单的实现方式，它被大多数的sharding框架和项目采用。</p>
+<h2>事务补偿机制</h2>
+<p>对于那些对性能要求很高，但对一致性要求并不高的系统，往往并不苛求系统的实时一致性，只要在一个允许的时间周期内达到最终一致性即可，这使得事务补偿机制成为一种可行的方案。事务补偿机制最初被提出是在“长事务”的处理中，但是对于分布式系统确保一致性也有很好的参考意义。笼统地讲，与事务在执行中发生错误后立即回滚的方式不同，事务补偿是一种事后检查并补救的措施，它只期望在一个容许时间周期内得到最终一致的结果就可以了。事务补偿的实现与系统业务紧密相关，并没有一种标准的处理方式。一些常见的实现方式有：对数据进行对帐检查;基于日志进行比对;定期同标准数据来源进行同步，等等。</p>
+<h2>小结</h2>
+<p>分布式事务，最严格的事务实现，但性能是个大问题;Best Efforts 1PC模式，性能与事务可靠性的平衡，支持系统水平伸缩，大多数情况下是最合适的选择;事务补偿机制，只能适用于对事务性要求不高，允许数据“最终一致”即可的系统，牺牲实时一致性，获得最大的性能回报。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-04T02:04:01.000Z"><a href="/2013/06/04/4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">6月 4 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/06/04/4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://blog.csdn.net/bluishglc/article/details/7766508">本文出处</a></p>
+<p>本系列相关文章：</p>
+<ul>
+<li>数据库Sharding的基本思想和切分策略</li>
+<li>数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</li>
+<li>数据库分库分表(sharding)系列(二) 全局主键生成策略</li>
+<li>数据库分库分表(sharding)系列(三) 关于使用框架还是自主开发以及sharding实现层面的考量</li>
+<li>数据库分库分表(sharding)系列(四) 多数据源的事务处理</li>
+<li>数据库分库分表(sharding)系列(五) 一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案</li>
+</ul>
+<p>当团队对系统业务和数据库进行了细致的梳理，确定了切分方案后，接下来的问题就是如何去实现切分方案了，目前在sharding方面有不少的开源框架和产品可供参考，同时很多团队也会选择自主开发实现，而不管是选择框架还是自主开发，都会面临一个在哪一层上实现sharding逻辑的问题，本文会对这一系列的问题逐一进行分析和考量。本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7766508">http://blog.csdn.net/bluishglc/article/details/7766508</a> 转载请注明出处！</p>
+<h2>一、sharding逻辑的实现层面</h2>
+<p>从一个系统的程序架构层面来看，sharding逻辑可以在DAO层、JDBC API层、介于DAO与JDBC之间的Spring数据访问封装层(各种spring的template)以及介于应用服务器与数据库之间的sharding代理服务器四个层面上实现。</p>
+<p><img src="4-图1.Sharding实现层面与相关框架-产品.jpg" alt="4-图1.Sharding实现层面与相关框架-产品.jpg"></p>
+<p>图1. Sharding实现层面与相关框架/产品</p>
+<h3>1. 在DAO层实现</h3>
+<p>当团队决定自行实现sharding的时候，DAO层可能是嵌入sharding逻辑的首选位置，因为在这个层面上，每一个DAO的方法都明确地知道需要访问的数据表以及查询参数，借助这些信息可以直接定位到目标shard上，而不必像框架那样需要对SQL进行解析然后再依据配置的规则进行路由。另一个优势是不会受ORM框架的制约。由于现在的大多数应用在数据访问层上会依赖某种ORM框架，而多数的shrading框架往往无法支持或只能支持一种orm框架，这使得在选择和应用框架时受到了很大的制约，而自行实现sharding完全没有这方面的问题，甚至不同的shard使用不同的orm框架都可以在一起协调工作。比如现在的java应用大多使用hibernate，但是当下还没有非常令人满意的基于hibernate的sharding框架，（关于hibernate hards会在下文介绍），因此很多团队会选择自行实现sharding。</p>
+<p>简单总结一下，在DAO层自行实现sharding的优势在于：不受ORM框架的制约、实现起来较为简单、易于根据系统特点进行灵活的定制、无需SQL解析和路由规则匹配，性能上表现会稍好一些;劣势在于：有一定的技术门槛，工作量比依靠框架实现要大(反过来看，框架会有学习成本)、不通用，只能在特定系统里工作。当然，在DAO层同样可以通过XML配置或是注解将sharding逻辑抽离到“外部”，形成一套通用的框架. 不过目前还没有出现此类的框架。</p>
+<h3>2. 在ORM框架层实现</h3>
+<p>在ORM框架层实现sharding有两个方向，</p>
+<p>一个是在实现O-R Mapping的前提下同时提供sharding支持，从而定位为一种分布式的数据访问框架，这一类类型的框架代表就是<a href="http://code.google.com/p/guzz/">guzz</a>
+另一个方向是通过对既有ORM框架进行修改增强来加入sharding机制。此类型的代表产品是<a href="http://www.hibernate.org/subprojects/shards.html">hibernate shard[</a>. 应该说以hibernate这样主流的地位，行业对于一款面向hibernate的sharding框架的需求是非常迫切的，但是就目前的hibernate shards来看，表现还算不上令人满意，主要是它对使用hibernate的限制过多，比如它对HQL的支持就非常有限。在mybatis方面，目前还没有成熟的相关框架产生。有人提出利用mybatis的插件机制实现sharding,但是遗憾的是，mybatis的插件机制控制不到多数据源的连接层面，另一方面，离开插件层又失去了对sql进行集中解析和路由的机会，因此在mybatis框架上，目前还没有可供借鉴的框架，团队可能要在DAO层或Spring模板类上下功夫了。</p>
+<h3>3. 在JDBC API层实现</h3>
+<p>JDBC API层是很多人都会想到的一个实现sharding的绝佳场所，如果我们能提供一个实现了sharding逻辑的JDBC API实现，那么sharding对于整个应用程序来说就是完全透明的，而这样的实现可以直接作为通用的sharding产品了。</p>
+<p>但是这种方案的技术门槛和工作量显然不是一般团队能做得来的，因此基本上没有团队会在这一层面上实现sharding,甚至也没有此类的开源产品。笔者知道的只有一款商业产品<a href="http://www.dbshards.com/">dbShards</a>采用的是这一方案。</p>
+<h3>4. 在介于DAO与JDBC之间的Spring数据访问封装层实现</h3>
+<p>在springd大行其道的今天，几乎没有哪个java平台上构建的应用不使用spring，在DAO与JDBC之间，spring提供了各种template来管理资源的创建与释放以及与事务的同步，大多数基于spring的应用都会使用template类做为数据访问的入口，这给了我们另一个嵌入sharding逻辑的机会，就是通过提供一个嵌入了sharding逻辑的template类来完成sharding工作.</p>
+<p>这一方案在效果上与基于JDBC API实现的方案基本一致，同样是对上层代码透明，在进行sharding改造时可以平滑地过度，但它的实现却比基于JDBC API的方式简单，
+因此成为了不少框架的选择，阿里集团研究院开源的<a href="http://write.blog.csdn.net/postedit/code.alibabatech.com/wiki/display/CobarClient/Home">Cobar Client</a>就是这类方案的一种实现。</p>
+<h3>5. 在应用服务器与数据库之间通过代理实现</h3>
+<p>在应用服务器与数据库之间加入一个代理，应用程序向数据发出的数据请求会先通过代理，代理会根据配置的路由规则，对SQL进行解析后路由到目标shard，因为这种方案对应用程序完全透明，通用性好，所以成为了很多sharding产品的选择。在这方面较为知名的产品是mysql官方的代理工具：<a href="http://dev.mysql.com/doc/refman/5.6/en/mysql-proxy.html">Mysql Proxy</a>和一款国人开发的产品:<a href="http://code.google.com/p/amoeba/">amoeba</a>。</p>
+<p>mysql proxy本身并没有实现任何sharding逻辑，它只是作为一种面向mysql数据库的代理，给开发人员提供了一个嵌入sharding逻辑的场所，它使用lua作为编程语言，这对很多团队来说是需要考虑的一个问题。amoeba则是专门实现读写分离与sharding的代理产品，它使用非常简单，不使用任何编程语言，只需要通过xml进行配置。不过amoeba不支持事务(从应用程序发出的包含事务信息的请求到达amoeba时，事务信息会被抹去，因此，即使是单点数据访问也不会有事务存在)一直是个硬伤。当然，这要看产品的定位和设计理念，我们只能说对于那些对事务要求非常高的系统，amoeba是不适合的。</p>
+<h2>二、使用框架还是自主开发？</h2>
+<p>前面的讨论中已经罗列了很多开源框架与产品，这里再整理一下：基于代理方式的有MySQL Proxy和Amoeba，基于Hibernate框架的是Hibernate Shards，通过重写spring的ibatis template类是Cobar Client，这些框架各有各的优势与短板，架构师可以在深入调研之后结合项目的实际情况进行选择，但是总的来说，我个人对于框架的选择是持谨慎态度的。一方面多数框架缺乏成功案例的验证，其成熟性与稳定性值得怀疑。另一方面，一些从成功商业产品开源出框架（如阿里和淘宝的一些开源项目）是否适合你的项目是需要架构师深入调研分析的。当然，最终的选择一定是基于项目特点、团队状况、技术门槛和学习成本等综合因素考量确定的。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+
+  <nav id="pagination">
+  
+  
+    <a href="/archives/2013/page/2/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:whatot.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/database/">database</a><small>6</small></li>
+  
+    <li><a href="/categories/language/">language</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/c-1/">c</a><small>1</small></li>
+  
+    <li><a href="/tags/c-language/">c language</a><small>1</small></li>
+  
+    <li><a href="/tags/database/">database</a><small>6</small></li>
+  
+    <li><a href="/tags/language/">language</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2013 whatot
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
