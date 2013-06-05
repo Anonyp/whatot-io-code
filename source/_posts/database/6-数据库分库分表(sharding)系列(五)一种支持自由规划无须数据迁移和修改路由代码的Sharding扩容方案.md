@@ -1,4 +1,4 @@
-title: "数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示"
+title: "6-数据库分库分表(sharding)系列(五)一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案"
 date: 2013-06-04 10:06:01
 category: database
 tags: database

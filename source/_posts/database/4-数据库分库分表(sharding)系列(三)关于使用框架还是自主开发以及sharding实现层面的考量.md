@@ -1,4 +1,4 @@
-title: "数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示"
+title: "4-数据库分库分表(sharding)系列(三)关于使用框架还是自主开发以及sharding实现层面的考量"
 date: 2013-06-04 10:04:01
 category: database
 tags: database

@@ -1,4 +1,4 @@
-title: "数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示"
+title: "3-数据库分库分表(sharding)系列(二)全局主键生成策略"
 date: 2013-06-04 10:03:01
 category: database
 tags: database

@@ -1,4 +1,4 @@
-title: "数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示"
+title: "5-数据库分库分表(sharding)系列(四)多数据源的事务处理"
 date: 2013-06-04 10:05:01
 category: database
 tags: database
