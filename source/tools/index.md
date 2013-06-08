@@ -6,7 +6,6 @@ categories:
 此处存放一些工具信息
 <!--more-->
 
-### Latex
 
 ### 开发工具
 
@@ -23,9 +22,9 @@ categories:
 * （置顶）[命令行乐园](http://www.commandlinefu.com/commands/browse)
 
 * 使用一行python命令查看/解压缩/创建zip文件：
-	>1. 查看 - python -m zipfile -l test.zip
-	>2. 解压缩 - python -m zipfile -e test.zip test
-	>3. 创建 - python -m zipfile -c release.zip *.py
+	1. 查看 - python -m zipfile -l test.zip
+	2. 解压缩 - python -m zipfile -e test.zip test
+	3. 创建 - python -m zipfile -c release.zip *.py
 
 * 查看所有用户的crontab任务(root权限执行)：
 ``for user in $(cut -f1 -d: * /etc/passwd); do echo "### Crontabs for $user ###"; crontab -u $user -l; done``
@@ -47,9 +46,9 @@ categories:
 * Windows上查看端口占用情况： ``netstat -ano``
 
 * 查看LINUX发行版的名称及其版本号的命令：
-	>1. cat /etc/issue；
-	>2. lsb_release -a；
-	>3. cat /etc/redhat-release(针对redhat，Fedora)
+	1. cat /etc/issue；
+	2. lsb_release -a；
+	3. cat /etc/redhat-release(针对redhat，Fedora)
 
 * [ack-grep](http://betterthangrep.com/) — 比grep更好用的搜索工具，专为程序员优化
 
@@ -57,6 +56,7 @@ categories:
 开启触摸板：``sudo modprobe psmouse``
 
 * 将man手册转换为pdf格式打印出来阅读，如直接将man命令的手册页转换为pdf格式:
+
 ``man -t man | ps2pdf - > man.pdf``
 
 * 显示进程树：``pstree``
@@ -76,16 +76,18 @@ categories:
 * 每隔x秒执行命令command，显示输出：``watch -n [number_of_seconds] [command]``
 
 * 监听来自端口的网络输入，存入文件中：
-``netcat -l [recieving_port] > file_copied``
+	``netcat -l [recieving_port] > file_copied``
 
 * 将命令的输出通过管道经网络传递给目标ip端口：
+
 ``[command] | netcat -w [number_of_seconds_before_timeout] [target_ip] [target_port]``
 
 * 使用tar压缩文件并将文件作为流输出，通过管道经网络传递给目标ip端口：
+
 ``sudo tar -czf - [filename] | netcat -w [number_of_seconds_before_timeout] [target_ip] [target_port]``
 
 * ``traceroute``：查看到目标机器/ip的网络路由，如
-``traceroute www.google.com.hk``
+	``traceroute www.google.com.hk``
 
 * ``nmap``：扫描机器检查开放的网络端口，如
 ``nmap 127.0.0.1`` — 扫描本地机器的开放端口
@@ -93,16 +95,16 @@ categories:
 * ``tee``：在标准输出显示的同时输出到文件，如``ls | tee ls.txt``
 
 * 显示软件包的详细描述信息：
-``apt-cache show [package_name]``
-``pacman -Q [package_name]``
+	1. ``apt-cache show [package_name]``
+	2. ``pacman -Q [package_name]``
+	3. others
 
 * ls
 按文件名逆序输出结果：ls -r；
 递归遍历目录：ls -R；
 按时间顺序：ls -t，按时间逆序：ls -tr；
 按文件大小排序：ls -S。
-
-（默认按文件名排序，-r表示逆序，-t表示按时间排序，-S表示按文件大小排序，-h表示以方便人阅读的形式输出）
+	（默认按文件名排序，-r表示逆序，-t表示按时间排序，-S表示按文件大小排序，-h表示以方便人阅读的形式输出）
 
 * 系统负载监控：``top/htop/nmon``
 
@@ -114,24 +116,27 @@ categories:
 * 以树状分支罗列目录内容：``tree [dir_name]``
 
 * 大数据传输：
-	>1. ``scp -P remoteport username@remoteip:remotedir localdir``
-		或``scp -P remoteport localfile username@remoteip:remotedir``；
-	>2. scp之外可以使用命令组合：
-	``gzip -c /home/xiayf/data | ssh username@ip "gunzip -c -
-	>/home/whatot/data" ``
+	1. ``scp -P remoteport username@remoteip:remotedir localdir``    
+	或``scp -P remoteport localfile username@remoteip:remotedir``；
+	2. scp之外可以使用命令组合：
+	``gzip -c /home/xiayf/data | ssh username@ip "gunzip -c - /home/whatot/data" ``
 
 * ``ping ip -f``：持续不断地ping某台服务器(泛洪？)，可能会ping死那台服务器
 
 * 重装Ubuntu，一个个安装程序太麻烦，可先在原来的Ubuntu上执行
+
 ``dpkg --get-selections|awk '{print $1}' > o.txt``
+
 导出一个所有已安装程序的列表，然后就可以一键安装了：
+
 ``cat o.txt | xargs sudo apt-get install``
 
 * 打包后，以 gzip 压缩：``tar -zcvf /tmp/etc.tar.gz /etc``；
+
 打包后，以 bzip2 压缩：``tar -jcvf /tmp/etc.tar.bz2 /etc``
 
 * 在Linux系统下, 可以用一个命令很容易批量删除.svn的文件夹：
-``find . -name .svn -type d -exec rm -fr {} \;``
+	``find . -name .svn -type d -exec rm -fr {} \;``
 
 * 查看当前正在监听的网络端口：``lsof -i`` 或者 ``netstat -tlnp``
 
@@ -140,14 +145,16 @@ categories:
 * python内嵌的简单便捷HTTP Server：``python -m SimpleHTTPServer Port``
 
 * Python命令行美化输出json数据：``python -mjson.tool json_filename``
-或者通过管道``some_cmd | python -mjson.tool``，也可以直接在命令行使用双引号包围一个json数据字符串来替代json_filename的位置。
+
+或者通过管道``some_cmd | python -mjson.tool``，
+也可以直接在命令行使用双引号包围一个json数据字符串来替代json_filename的位置。
 
 而且，如果你安装了 ``Pygments`` 模块，可以高亮地打印JSON：
 ``echo '{"json":"obj"}' | python -mjson.tool | pygmentize -l json``。
 
 * 保存某个virtualenv中已安装的package列表，并在另一个virtualenv中原样恢复：
-	>1. (some_env)$pip freeze > requirements.txt;
-	>2. (another_env)$pip install -r requirements.txt
+	1. ``(some_env)$pip freeze &gt; requirements.txt``;
+	2. ``(another_env)$pip install -r requirements.txt``
 
 * [Linux性能分析工具](http://youngsterxyf.github.io/assets/pics/linux-performance-analysis-tools.png)
 
