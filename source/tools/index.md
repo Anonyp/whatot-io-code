@@ -1,15 +1,10 @@
-title: 链接
-date: 2013-06-05 17:18:46
-tags: [collection, link]
+title: tools
+date: 2013-06-08 20:58:52
+categories:
 ---
 
-* [自己的收藏链接](https://github.com/whatot/cn-links)
-
-### hexo
-
-* [hexo 文档](http://zespia.tw/hexo/zh-CN/)
-* [hexo 小入门](http://zipperary.com/categories/hexo/)
-
+此处存放一些工具信息
+<!--more-->
 
 ### Latex
 
