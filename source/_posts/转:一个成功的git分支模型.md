@@ -2,6 +2,7 @@ title: 转:一个成功的Git分支模型
 date: 2013-06-11 23:08:40
 categories: basis
 tags: git
+---
 
 
 [原文出处](http://www.uml.org.cn/pzgl/201112163.asp)
