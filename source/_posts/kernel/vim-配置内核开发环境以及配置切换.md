@@ -14,7 +14,7 @@ linux内核开发与linux系统开发有所不同，系统开发是利用系统�
 我的[vim配置文件](https://github.com/whatot/whatot-vimrc)
 
 * ycm 分支	一般用于python 开发以及日常使用
-* c 分支	用于一般的 C 语言开发
+* c 分支[已去除]	用于一般的 C 语言开发
 * kernel分支	专用于内核开发
 
 主要插件 :BundleList

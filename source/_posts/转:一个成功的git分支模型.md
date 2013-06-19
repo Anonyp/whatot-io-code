@@ -1,6 +1,6 @@
 title: 转:一个成功的Git分支模型
 date: 2013-06-11 23:08:40
-categories: basis
+categories: git
 tags: git
 ---
 
