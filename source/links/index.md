@@ -15,3 +15,6 @@ tags: [collection, link]
 * [hexo 小入门](http://zipperary.com/categories/hexo/)
 
 
+### [译文]程序员能力矩阵 Programmer Competency Matrix
+
+http://static.icybear.net/%5BCN%5DProgrammer%20competency%20matrix.htm
