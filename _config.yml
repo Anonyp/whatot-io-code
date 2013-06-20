@@ -15,7 +15,7 @@ language: zh-CN
 # origin permalink: :year/:month/:day/:title/
 url: http://whatot.github.io
 root: /
-permalink: public/:category/:title/
+permalink: pub/:category/:title/
 tag_dir: tags
 archive_dir: archives
 category_dir: categories

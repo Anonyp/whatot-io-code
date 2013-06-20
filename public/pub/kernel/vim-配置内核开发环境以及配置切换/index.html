@@ -1,0 +1,311 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>vim 配置内核开发环境以及配置切换 | Whatot 日常积累</title>
+  <meta name="author" content="whatot">
+  
+  <meta name="description" content="whatot blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="vim 配置内核开发环境以及配置切换"/>
+  <meta property="og:site_name" content="Whatot 日常积累"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Whatot 日常积累</a></h1>
+  <h2><a href="/">积累每一天，无论是技术还是生活</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/links">链接</a></li>
+    
+      <li><a href="/tools">工具集</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-06T03:12:52.000Z"><a href="/pub/kernel/vim-配置内核开发环境以及配置切换/">6月 6 2013</a></time>
+      
+      
+  
+    <h1 class="title">vim 配置内核开发环境以及配置切换</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>参考文章: <a href="http://edsionte.com/techblog/archives/1689">使用vim+ctags+cscope阅读内核源码</a></p>
+<p>linux内核开发与linux系统开发有所不同，系统开发是利用系统库，而内核是自包含的，不需要外部系统库的支持，所以与系统开发有所不同。
+<a name="more"></a></p>
+<h2>1. vim 基础配置</h2>
+<p>我的<a href="https://github.com/whatot/whatot-vimrc">vim配置文件</a></p>
+<ul>
+<li>ycm 分支    一般用于python 开发以及日常使用</li>
+<li>c 分支[已去除]    用于一般的 C 语言开发</li>
+<li>kernel分支    专用于内核开发</li>
+</ul>
+<p>主要插件 :BundleList</p>
+<pre><code><figure class="highlight"><pre>" My Bundles
+Bundle 'gmarik/vundle'
+Bundle 'STL-improved'
+Bundle 'majutsushi/tagbar'
+Bundle 'tag_in_new_tab'
+Bundle 'autoload_cscope.vim'
+Bundle 'CmdlineComplete'
+Bundle 'Shougo/neocomplete.vim'
+Bundle 'Shougo/neosnippet.vim'
+Bundle 'scrooloose/syntastic'
+Bundle 'plasticboy/vim-markdown'
+Bundle 'bash-support.vim'
+Bundle 'bufexplorer.zip'
+Bundle 'grep.vim'
+Bundle 'a.vim'
+Bundle 'kien/ctrlp.vim'
+Bundle 'L9'
+Bundle 'FuzzyFinder'
+Bundle 'The-NERD-Commenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'LargeFile'
+Bundle 'tpope/vim-surround'
+Bundle 'kana/vim-smartinput'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'matchit.zip'
+Bundle 'asins/vimcdoc'
+Bundle 'vimcn/NERD_commenter.cnx'
+Bundle 'vimcn/tagbar.cnx'
+Bundle 'vimcn/matchit.vim.cnx'
+</pre></figure></code></pre>
+<p>需要安装ctags, cscope</p>
+<pre><code><figure class="highlight"><pre><span class="title">cd</span> 内核源码目录
+<span class="title">make</span> tags
+<span class="title">make</span> cscope
+<span class="title">set</span> tags+=[tags所在目录]tags
+<span class="title">cs</span> add [cscope.out所在目录]cscope.out
+</pre></figure></code></pre>
+<p>按自己需要将后两条加入vimrc</p>
+<h2>2. session</h2>
+<p>可以使用session保存配置，快速在内核开发与系统开发配置间切换</p>
+<p>可以在 <strong>.vimrc</strong> 中加入这段，使用快捷键</p>
+<pre><code><figure class="highlight"><pre>" session
+" :mksession
+" :source session-file
+
+set sessionoptions=blank,buffers,sesdir,folds,help,options,tabpages,winsize,resize
+nmap <span class="tag">&lt;<span class="title">F3</span>&gt;</span> :mksession! ~/.vim/sessions/
+nmap <span class="tag">&lt;<span class="title">C-F3</span>&gt;</span> :so ~/.vim/sessions/
+</pre></figure></code></pre>
+<h2>3. git branch</h2>
+<p>可以使用 git branch 切换配置</p>
+<p>新建kernel分支</p>
+<pre><code><figure class="highlight"><pre><span class="title">git</span> branch kernel
+</pre></figure></code></pre>
+<p>如果使用的是 <code>~/linux-3.9.4/</code> 为内核源码目录，在<code>make tags cscope</code>后</p>
+<p>在 vimrc 加入:</p>
+<pre><code><figure class="highlight"><pre><span class="operator"><span class="keyword">set</span> tags+=~/linux-<span class="number">3.9</span><span class="number">.4</span>/tags
+cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span class="number">.4</span>/cscope.out
+</pre></figure></code></pre>
+<p>以及去除其他 tags 与 cscope.out</p>
+<h2>4. ctags, cscope 使用</h2>
+<p>完成以上步骤以后就可以通过vim进行源码的快速定位了。上述安装的ctags和cscope都属于源码索引工具，因此仅安装两者之一也是可以的。不错，虽然ctags可以快速定位所输入的标签，但cscope的使用方法则更灵活。所以两者同时安装使用起来更方便。下面是一些简单的使用方法，仅供参考。</p>
+<h3>4.1. 使用ctags</h3>
+<p>ctags的使用特别简单，首先进入源码目录下，打开vim编辑器，在命令模式下输入：tag tag_name 按回车即可。通常tag_name可以是结构体名称，函数名称，宏变量名称等。通常输入上述命令后，因为找到的标签并不唯一，所以还需要配合使用下述命令：</p>
+<pre><code><figure class="highlight"><pre><span class="title">tfirst</span>：跳至第一个
+<span class="title">tnext</span>：跳至下一个
+<span class="title">tlast</span>：跳至最后一个
+</pre></figure></code></pre>
+<h3>4.2. 使用cscope</h3>
+<p>虽然ctags使用方便快捷，但有时候使用cscope更灵活，首先可以看cscope的帮助文件：</p>
+<p>cscope 命令:</p>
+<pre><code><figure class="highlight"><pre><span class="title">add</span>  ：添加一个新的数据库             (用法： add file|dir [pre-path] [flags])
+<span class="title">find</span> ：查询一个模式                   (用法： find c|d|e|f|g|i|s|t name)
+<span class="title">c</span>：找到调用这个函数的函数
+<span class="title">d</span>：找到被这个函数调用的函数
+<span class="title">e</span>：找到这个 egrep 模式
+<span class="title">f</span>：找到此文件夹
+<span class="title">g</span>：找到这个定义
+<span class="title">i</span>：找文件 #包括这个文件
+<span class="title">s</span>：找到这个 <span class="type">C</span> 符号
+<span class="title">t</span>：找到对其的赋值
+<span class="title">help</span> ：显示此信息                     (用法： help)
+<span class="title">kill</span> ：结束一个连接                   (用法： kill #)
+<span class="title">reset</span>：重置所有连接                   (用法： reset)
+<span class="title">show</span> ：显示连接                       (用法： show)
+</pre></figure></code></pre>
+<p>通过上面的帮助文件可以发现如果想找到request_irq函数的定义处代码，即可使用这个命令：
+<code>cs find g request_irq</code>来进行查找。大多数情况下查找的结果并不唯一，因为需要在多个结果中通过头文件来继续查看。</p>
+<p>通常是先通过cscope大致定位到头文件，再通过ctags在该头文件中详细定位。其实这两种工具并不局限于上述用法，更多用法可以再深入使用的过程中慢慢摸索，而且配合正则表达式等效果会更好。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/kernel/">kernel</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/vim/">vim</a>, <a href="/tags/kernel/">kernel</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:whatot.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/algorithm/">algorithm</a><small>1</small></li>
+  
+    <li><a href="/categories/basis/">basis</a><small>1</small></li>
+  
+    <li><a href="/categories/c/">c</a><small>1</small></li>
+  
+    <li><a href="/categories/database/">database</a><small>6</small></li>
+  
+    <li><a href="/categories/fun/">fun</a><small>1</small></li>
+  
+    <li><a href="/categories/git/">git</a><small>1</small></li>
+  
+    <li><a href="/categories/kernel/">kernel</a><small>1</small></li>
+  
+    <li><a href="/categories/python/">python</a><small>1</small></li>
+  
+    <li><a href="/categories/thought/">thought</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/CPU/">CPU</a><small>1</small></li>
+  
+    <li><a href="/tags/algorithm/">algorithm</a><small>1</small></li>
+  
+    <li><a href="/tags/c/">c</a><small>1</small></li>
+  
+    <li><a href="/tags/database/">database</a><small>6</small></li>
+  
+    <li><a href="/tags/git/">git</a><small>1</small></li>
+  
+    <li><a href="/tags/kernel/">kernel</a><small>1</small></li>
+  
+    <li><a href="/tags/language/">language</a><small>1</small></li>
+  
+    <li><a href="/tags/math/">math</a><small>1</small></li>
+  
+    <li><a href="/tags/python/">python</a><small>1</small></li>
+  
+    <li><a href="/tags/regex/">regex</a><small>1</small></li>
+  
+    <li><a href="/tags/thought/">thought</a><small>2</small></li>
+  
+    <li><a href="/tags/vim/">vim</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/CPU/" style="font-size: 11.67px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.00px;">algorithm</a><a href="/tags/c/" style="font-size: 10.83px;">c</a><a href="/tags/database/" style="font-size: 19.17px;">database</a><a href="/tags/git/" style="font-size: 14.17px;">git</a><a href="/tags/kernel/" style="font-size: 15.83px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/math/" style="font-size: 17.50px;">math</a><a href="/tags/python/" style="font-size: 12.50px;">python</a><a href="/tags/regex/" style="font-size: 13.33px;">regex</a><a href="/tags/thought/" style="font-size: 18.33px;">thought</a><a href="/tags/vim/" style="font-size: 16.67px;">vim</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2013 whatot
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
