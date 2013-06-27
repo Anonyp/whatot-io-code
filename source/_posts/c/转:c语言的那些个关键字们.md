@@ -1,7 +1,7 @@
 title: 转:C语言的那些个关键字们
 date: 2013-06-05 10:38:45
 categories:
-tags: [c, language]
+tags: [c, language, program]
 ---
 
 [[转] C语言的那些个关键字们](http://blogread.cn/it/article/5844)

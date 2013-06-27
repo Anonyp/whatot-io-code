@@ -1,7 +1,7 @@
 title: 【转】【译文】程序语言简史（伪）
 date: 2013-06-09 10:30:05
 categories: fun
-tag: [language, fun]
+tags: [language, fun]
 ---
 
 
