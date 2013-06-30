@@ -1,5 +1,5 @@
 title: 转:Linux/Unix终端支持256色
-date: 2013-06-30 19:11:24
+date: 2013-06-30 18:11:24
 categories:
 tags: linux
 ---
