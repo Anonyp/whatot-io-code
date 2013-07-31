@@ -1,7 +1,7 @@
 title: 转:Linux下文本的高效处理
 date: 2013-07-27 12:11:24
 categories:
-tags: linux
+tags: [shell, linux]
 ---
 
 原文来源：[http://ahei.info/text-processing.htm](http://ahei.info/text-processing.htm)

@@ -1,7 +1,7 @@
 title: 转:shell采集系统cpu 内存 磁盘 网络信息
 date: 2013-07-27 16:29:14
 categories:
-tags:
+tags: [shell, linux]
 ---
 
 原文地址：

@@ -1,7 +1,7 @@
 title: 转:Linux/Unix终端支持256色
 date: 2013-06-30 18:11:24
 categories:
-tags: linux
+tags: [shell, linux]
 ---
 
 [原文来源:](http://yysfire.github.io/linux/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8BLinux%E7%BB%88%E7%AB%AF%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81256%E8%89%B2.html)

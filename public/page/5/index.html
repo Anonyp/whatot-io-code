@@ -57,6 +57,43 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2013-06-04T02:05:01.000Z"><a href="/pub/database/转5-数据库分库分表sharding系列四多数据源的事务处理/">6月 4 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/pub/database/转5-数据库分库分表sharding系列四多数据源的事务处理/">转:5-数据库分库分表(sharding)系列(四)多数据源的事务处理</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>本文原文链接：<a href="http://blog.csdn.net/bluishglc/article/details/7793172">http://blog.csdn.net/bluishglc/article/details/7793172</a> 转载请注明出处！</p>
+<p>系统经sharding改造之后，原来单一的数据库会演变成多个数据库，如何确保多数据源同时操作的原子性和一致性是不得不考虑的一个问题。总体上看，目前对于一个分布式系统的事务处理有三种方式：分布式事务、基于Best Efforts 1PC模式的事务以及事务补偿机制。我们下面对这三种处理方式一一进行分析。
+
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/pub/database/转5-数据库分库分表sharding系列四多数据源的事务处理/#more" class="more-link">阅读全文</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2013-06-04T02:04:01.000Z"><a href="/pub/database/转4-数据库分库分表sharding系列三关于使用框架还是自主开发以及sharding实现层面的考量/">6月 4 2013</a></time>
       
       
@@ -236,7 +273,7 @@
   
     <li><a href="/categories/kernel/">kernel</a><small>2</small></li>
   
-    <li><a href="/categories/linux/">linux</a><small>4</small></li>
+    <li><a href="/categories/linux/">linux</a><small>5</small></li>
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
@@ -275,7 +312,7 @@
   
     <li><a href="/tags/language/">language</a><small>3</small></li>
   
-    <li><a href="/tags/linux/">linux</a><small>4</small></li>
+    <li><a href="/tags/linux/">linux</a><small>6</small></li>
   
     <li><a href="/tags/math/">math</a><small>1</small></li>
   
@@ -286,6 +323,8 @@
     <li><a href="/tags/python/">python</a><small>1</small></li>
   
     <li><a href="/tags/regex/">regex</a><small>1</small></li>
+  
+    <li><a href="/tags/shell/">shell</a><small>5</small></li>
   
     <li><a href="/tags/thought/">thought</a><small>2</small></li>
   
@@ -299,7 +338,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 13.16px;">algorithm</a><a href="/tags/bash/" style="font-size: 13.68px;">bash</a><a href="/tags/c/" style="font-size: 16.84px;">c</a><a href="/tags/cache/" style="font-size: 11.58px;">cache</a><a href="/tags/career/" style="font-size: 10.53px;">career</a><a href="/tags/database/" style="font-size: 19.47px;">database</a><a href="/tags/fun/" style="font-size: 12.11px;">fun</a><a href="/tags/git/" style="font-size: 12.63px;">git</a><a href="/tags/kernel/" style="font-size: 17.89px;">kernel</a><a href="/tags/language/" style="font-size: 17.37px;">language</a><a href="/tags/linux/" style="font-size: 18.42px;">linux</a><a href="/tags/math/" style="font-size: 14.21px;">math</a><a href="/tags/perf/" style="font-size: 15.26px;">perf</a><a href="/tags/program/" style="font-size: 18.95px;">program</a><a href="/tags/python/" style="font-size: 14.74px;">python</a><a href="/tags/regex/" style="font-size: 11.05px;">regex</a><a href="/tags/thought/" style="font-size: 16.32px;">thought</a><a href="/tags/vim/" style="font-size: 15.79px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.50px;">CPU</a><a href="/tags/algorithm/" style="font-size: 12.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 15.50px;">cache</a><a href="/tags/career/" style="font-size: 15.00px;">career</a><a href="/tags/database/" style="font-size: 19.50px;">database</a><a href="/tags/fun/" style="font-size: 11.50px;">fun</a><a href="/tags/git/" style="font-size: 12.00px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.00px;">linux</a><a href="/tags/math/" style="font-size: 13.00px;">math</a><a href="/tags/perf/" style="font-size: 13.50px;">perf</a><a href="/tags/program/" style="font-size: 18.00px;">program</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/regex/" style="font-size: 14.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 14.50px;">vim</a>
   </div>
 </div>
 
