@@ -1,6 +1,6 @@
 title: 转:Gallery of Processor Cache Effects
 date: 2013-07-27 17:01:54
-categories:
+categories: linux_program
 tags: [program, cache]
 ---
 

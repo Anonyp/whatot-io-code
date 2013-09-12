@@ -1,6 +1,6 @@
 title: 转:正确用DD测试磁盘读写速度
 date: 2013-08-03 23:11:35
-categories:
+categories: linux
 tags: [linux, shell]
 ---
 

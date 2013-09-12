@@ -1,6 +1,6 @@
 title: 转:关于c语言结构体偏移的一点思考
 date: 2013-06-26 22:38:45
-categories:
+categories: c
 tags: [c, language, kernel, program]
 ---
 

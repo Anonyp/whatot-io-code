@@ -1,6 +1,6 @@
 title: 转:Martyr2 的一百个大作业
 date: 2013-07-29 22:50:04
-categories:
+categories: program
 tags: [program, career]
 ---
 

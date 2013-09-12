@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,89 +65,83 @@
     </header>
     <div class="entry">
       
-        <p>参考文章: <a href="http://edsionte.com/techblog/archives/1689">使用vim+ctags+cscope阅读内核源码</a></p>
-<p>linux内核开发与linux系统开发有所不同，系统开发是利用系统库，而内核是自包含的，不需要外部系统库的支持，所以与系统开发有所不同。
-<a name="more"></a></p>
+        <p>参考文章: <a href="http://edsionte.com/techblog/archives/1689" target="_blank">使用vim+ctags+cscope阅读内核源码</a></p>
+<p>linux内核开发与linux系统开发有所不同，系统开发是利用系统库，而内核是自包含的，不需要外部系统库的支持，所以与系统开发有所不同。<br><a id="more"></a></p>
 <h2>1. vim 基础配置</h2>
-<p>我的<a href="https://github.com/whatot/whatot-vimrc">vim配置文件</a></p>
+<p>我的<a href="https://github.com/whatot/whatot-dot/" target="_blank">vim配置文件</a></p>
 <ul>
-<li>ycm 分支    一般用于python 开发以及日常使用</li>
+<li>master    about all</li>
+<li>ycm 分支[已合并]    一般用于python 开发以及日常使用</li>
 <li>c 分支[已去除]    用于一般的 C 语言开发</li>
-<li>kernel分支    专用于内核开发</li>
+<li>kernel分支[已合并]    专用于内核开发</li>
 </ul>
 <p>主要插件 :BundleList</p>
-<pre><code><figure class="highlight"><pre>" My Bundles
-Bundle 'gmarik/vundle'
-Bundle 'STL-improved'
-Bundle 'majutsushi/tagbar'
-Bundle 'tag_in_new_tab'
-Bundle 'autoload_cscope.vim'
-Bundle 'CmdlineComplete'
-Bundle 'Shougo/neocomplete.vim'
-Bundle 'Shougo/neosnippet.vim'
-Bundle 'scrooloose/syntastic'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'bash-support.vim'
-Bundle 'bufexplorer.zip'
-Bundle 'grep.vim'
-Bundle 'a.vim'
-Bundle 'kien/ctrlp.vim'
-Bundle 'L9'
-Bundle 'FuzzyFinder'
-Bundle 'The-NERD-Commenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'LargeFile'
-Bundle 'tpope/vim-surround'
-Bundle 'kana/vim-smartinput'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'matchit.zip'
-Bundle 'asins/vimcdoc'
-Bundle 'vimcn/NERD_commenter.cnx'
-Bundle 'vimcn/tagbar.cnx'
-Bundle 'vimcn/matchit.vim.cnx'
-</pre></figure></code></pre>
+<pre><code>&quot; My Bundles
+Bundle &#39;gmarik/vundle&#39;
+Bundle &#39;STL-improved&#39;
+Bundle &#39;majutsushi/tagbar&#39;
+Bundle &#39;tag_in_new_tab&#39;
+Bundle &#39;autoload_cscope.vim&#39;
+Bundle &#39;CmdlineComplete&#39;
+Bundle &#39;Shougo/neocomplete.vim&#39;
+Bundle &#39;Shougo/neosnippet.vim&#39;
+Bundle &#39;scrooloose/syntastic&#39;
+Bundle &#39;plasticboy/vim-markdown&#39;
+Bundle &#39;bash-support.vim&#39;
+Bundle &#39;bufexplorer.zip&#39;
+Bundle &#39;grep.vim&#39;
+Bundle &#39;a.vim&#39;
+Bundle &#39;kien/ctrlp.vim&#39;
+Bundle &#39;L9&#39;
+Bundle &#39;FuzzyFinder&#39;
+Bundle &#39;The-NERD-Commenter&#39;
+Bundle &#39;scrooloose/nerdtree&#39;
+Bundle &#39;LargeFile&#39;
+Bundle &#39;tpope/vim-surround&#39;
+Bundle &#39;kana/vim-smartinput&#39;
+Bundle &#39;Lokaltog/vim-easymotion&#39;
+Bundle &#39;matchit.zip&#39;
+Bundle &#39;asins/vimcdoc&#39;
+Bundle &#39;vimcn/NERD_commenter.cnx&#39;
+Bundle &#39;vimcn/tagbar.cnx&#39;
+Bundle &#39;vimcn/matchit.vim.cnx&#39;</code></pre>
 <p>需要安装ctags, cscope</p>
-<pre><code><figure class="highlight"><pre><span class="title">cd</span> 内核源码目录
+<pre><code><span class="title">cd</span> 内核源码目录
 <span class="title">make</span> tags
 <span class="title">make</span> cscope
 <span class="title">set</span> tags+=[tags所在目录]tags
-<span class="title">cs</span> add [cscope.out所在目录]cscope.out
-</pre></figure></code></pre>
+<span class="title">cs</span> add [cscope.out所在目录]cscope.out</code></pre>
 <p>按自己需要将后两条加入vimrc</p>
 <h2>2. session</h2>
 <p>可以使用session保存配置，快速在内核开发与系统开发配置间切换</p>
 <p>可以在 <strong>.vimrc</strong> 中加入这段，使用快捷键</p>
-<pre><code><figure class="highlight"><pre>" session
+<pre><code>" session
 " :mksession
 " :source session-file
 
 set sessionoptions=blank,buffers,sesdir,folds,help,options,tabpages,winsize,resize
 nmap <span class="tag">&lt;<span class="title">F3</span>&gt;</span> :mksession! ~/.vim/sessions/
-nmap <span class="tag">&lt;<span class="title">C-F3</span>&gt;</span> :so ~/.vim/sessions/
-</pre></figure></code></pre>
+nmap <span class="tag">&lt;<span class="title">C-F3</span>&gt;</span> :so ~/.vim/sessions/</code></pre>
 <h2>3. git branch</h2>
 <p>可以使用 git branch 切换配置</p>
 <p>新建kernel分支</p>
-<pre><code><figure class="highlight"><pre><span class="title">git</span> branch kernel
-</pre></figure></code></pre>
+<pre><code><span class="title">git</span> branch kernel</code></pre>
 <p>如果使用的是 <code>~/linux-3.9.4/</code> 为内核源码目录，在<code>make tags cscope</code>后</p>
 <p>在 vimrc 加入:</p>
-<pre><code><figure class="highlight"><pre><span class="operator"><span class="keyword">set</span> tags+=~/linux-<span class="number">3.9</span><span class="number">.4</span>/tags
-cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span class="number">.4</span>/cscope.out
-</pre></figure></code></pre>
+<pre><code><span class="operator"><span class="keyword">set</span> tags+=~/linux-<span class="number">3.9</span><span class="number">.4</span>/tags
+cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span class="number">.4</span>/cscope.out</code></pre>
 <p>以及去除其他 tags 与 cscope.out</p>
 <h2>4. ctags, cscope 使用</h2>
 <p>完成以上步骤以后就可以通过vim进行源码的快速定位了。上述安装的ctags和cscope都属于源码索引工具，因此仅安装两者之一也是可以的。不错，虽然ctags可以快速定位所输入的标签，但cscope的使用方法则更灵活。所以两者同时安装使用起来更方便。下面是一些简单的使用方法，仅供参考。</p>
 <h3>4.1. 使用ctags</h3>
 <p>ctags的使用特别简单，首先进入源码目录下，打开vim编辑器，在命令模式下输入：tag tag_name 按回车即可。通常tag_name可以是结构体名称，函数名称，宏变量名称等。通常输入上述命令后，因为找到的标签并不唯一，所以还需要配合使用下述命令：</p>
-<pre><code><figure class="highlight"><pre><span class="title">tfirst</span>：跳至第一个
+<pre><code><span class="title">tfirst</span>：跳至第一个
 <span class="title">tnext</span>：跳至下一个
-<span class="title">tlast</span>：跳至最后一个
-</pre></figure></code></pre>
+<span class="title">tlast</span>：跳至最后一个</code></pre>
 <h3>4.2. 使用cscope</h3>
 <p>虽然ctags使用方便快捷，但有时候使用cscope更灵活，首先可以看cscope的帮助文件：</p>
 <p>cscope 命令:</p>
-<pre><code><figure class="highlight"><pre><span class="title">add</span>  ：添加一个新的数据库             (用法： add file|dir [pre-path] [flags])
+<pre><code><span class="title">add</span>  ：添加一个新的数据库             (用法： add file|dir [pre-path] [flags])
 <span class="title">find</span> ：查询一个模式                   (用法： find c|d|e|f|g|i|s|t name)
 <span class="title">c</span>：找到调用这个函数的函数
 <span class="title">d</span>：找到被这个函数调用的函数
@@ -161,10 +154,8 @@ cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span
 <span class="title">help</span> ：显示此信息                     (用法： help)
 <span class="title">kill</span> ：结束一个连接                   (用法： kill #)
 <span class="title">reset</span>：重置所有连接                   (用法： reset)
-<span class="title">show</span> ：显示连接                       (用法： show)
-</pre></figure></code></pre>
-<p>通过上面的帮助文件可以发现如果想找到request_irq函数的定义处代码，即可使用这个命令：
-<code>cs find g request_irq</code>来进行查找。大多数情况下查找的结果并不唯一，因为需要在多个结果中通过头文件来继续查看。</p>
+<span class="title">show</span> ：显示连接                       (用法： show)</code></pre>
+<p>通过上面的帮助文件可以发现如果想找到request_irq函数的定义处代码，即可使用这个命令：<br><code>cs find g request_irq</code>来进行查找。大多数情况下查找的结果并不唯一，因为需要在多个结果中通过头文件来继续查看。</p>
 <p>通常是先通过cscope大致定位到头文件，再通过ctags在该头文件中详细定位。其实这两种工具并不局限于上述用法，更多用法可以再深入使用的过程中慢慢摸索，而且配合正则表达式等效果会更好。</p>
 
       
@@ -239,6 +230,8 @@ cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -258,7 +251,7 @@ cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -300,7 +293,7 @@ cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -313,7 +306,8 @@ cs <span class="keyword">add</span> ~/linux-<span class="number">3.9</span><span
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

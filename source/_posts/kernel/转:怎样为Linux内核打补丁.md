@@ -1,6 +1,6 @@
 title: 转:怎样为Linux内核打补丁
 date: 2013-06-30 18:47:32
-categories:
+categories: kernel
 tags: [linux, kernel]
 ---
 

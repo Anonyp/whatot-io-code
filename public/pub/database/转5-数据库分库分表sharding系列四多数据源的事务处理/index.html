@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>转:5-数据库分库分表(sharding)系列(四)多数据源的事务处理 | database | Whatot 日常积累</title>
+  <title>转:5-数据库分库分表(sharding)系列(四)多数据源的事务处理 | Whatot 日常积累</title>
   <meta name="author" content="whatot">
   
   <meta name="description" content="whatot blog">
@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,25 +65,18 @@
     </header>
     <div class="entry">
       
-        <p>本文原文链接：<a href="http://blog.csdn.net/bluishglc/article/details/7793172">http://blog.csdn.net/bluishglc/article/details/7793172</a> 转载请注明出处！</p>
-<p>系统经sharding改造之后，原来单一的数据库会演变成多个数据库，如何确保多数据源同时操作的原子性和一致性是不得不考虑的一个问题。总体上看，目前对于一个分布式系统的事务处理有三种方式：分布式事务、基于Best Efforts 1PC模式的事务以及事务补偿机制。我们下面对这三种处理方式一一进行分析。
-<a name="more"></a></p>
+        <p>本文原文链接：<a href="http://blog.csdn.net/bluishglc/article/details/7793172" target="_blank">http://blog.csdn.net/bluishglc/article/details/7793172</a> 转载请注明出处！</p>
+<p>系统经sharding改造之后，原来单一的数据库会演变成多个数据库，如何确保多数据源同时操作的原子性和一致性是不得不考虑的一个问题。总体上看，目前对于一个分布式系统的事务处理有三种方式：分布式事务、基于Best Efforts 1PC模式的事务以及事务补偿机制。我们下面对这三种处理方式一一进行分析。<br><a id="more"></a></p>
 <h2>分布式事务</h2>
 <p>这是最为人们所熟知的多数据源事务处理机制。本文并不打算对分布式事务做过多介绍，读者可参考此文：关于分布式事务、两阶段提交、一阶段提交、Best Efforts 1PC模式和事务补偿机制的研究 。在这里只想对分布式事务的利弊作一下分析。</p>
 <h3>优势：</h3>
-<pre><code><figure class="highlight"><pre><span class="bullet">1. </span>基于两阶段提交，最大限度地保证了跨数据库操作的“原子性”，是分布式系统下最严格的事务实现方式。
-<span class="bullet">2. </span>实现简单，工作量小。由于多数应用服务器以及一些独立的分布式事务协调器做了大量的封装工作，使得项目中引入分布式事务的难度和工作量基本上可以忽略不计。
-</pre></figure></code></pre>
+<pre><code><span class="bullet">1. </span>基于两阶段提交，最大限度地保证了跨数据库操作的“原子性”，是分布式系统下最严格的事务实现方式。
+<span class="bullet">2. </span>实现简单，工作量小。由于多数应用服务器以及一些独立的分布式事务协调器做了大量的封装工作，使得项目中引入分布式事务的难度和工作量基本上可以忽略不计。</code></pre>
 <h3>劣势：</h3>
-<pre><code><figure class="highlight"><pre>系统“水平”伸缩的死敌。基于两阶段提交的分布式事务在提交事务时需要在多个节点之间进行协调,最大限度地推后了提交事务的时间点，客观上延长了事务的执行时间，这会导致事务在访问共享资源时发生冲突和死锁的概率增高，随着数据库节点的增多，这种趋势会越来越严重，从而成为系统在数据库层面上水平伸缩的"枷锁"， 这是很多Sharding系统不采用分布式事务的主要原因。
-</pre></figure></code></pre>
+<pre><code>系统“水平”伸缩的死敌。基于两阶段提交的分布式事务在提交事务时需要在多个节点之间进行协调,最大限度地推后了提交事务的时间点，客观上延长了事务的执行时间，这会导致事务在访问共享资源时发生冲突和死锁的概率增高，随着数据库节点的增多，这种趋势会越来越严重，从而成为系统在数据库层面上水平伸缩的&quot;枷锁&quot;， 这是很多Sharding系统不采用分布式事务的主要原因。</code></pre>
 <h2>基于Best Efforts 1PC模式的事务</h2>
 <p>与分布式事务采用的两阶段提交不同，Best Efforts 1PC模式采用的是一阶段端提交，牺牲了事务在某些特殊情况(当机、网络中断等)下的安全性，却获得了良好的性能，特别是消除了对水平伸缩的桎酷。</p>
-<p><a href="http://www.javaworld.com/javaworld/jw-01-2009/jw-01-spring-transactions.html?page=5">Distributed transactions in Spring, with and withoutXA</a>
-一文对Best Efforts 1PC模式进行了详细的说明，该文提供的Demo代码更是直接给出了在Spring环境下实现一阶段提交的多数据源事务管理示例。
-不过需要注意的是，原示例是基于spring 3.0之前的版本，如果你使用spring 3.0+,会得到如下错误：java.lang.IllegalStateException: Cannot activate transaction synchronization - already active，如果使用spring 3.0+，你需要参考
-<a href="https://github.com/SpringSource/spring-data-graph/blob/master/spring-data-neo4j/src/main/java/org/springframework/data/neo4j/transaction/ChainedTransactionManager.java">spring-data-neo4j</a>
-的实现。鉴于Best Efforts 1PC模式的性能优势，以及相对简单的实现方式，它被大多数的sharding框架和项目采用。</p>
+<p><a href="http://www.javaworld.com/javaworld/jw-01-2009/jw-01-spring-transactions.html?page=5" target="_blank">Distributed transactions in Spring, with and withoutXA</a><br>一文对Best Efforts 1PC模式进行了详细的说明，该文提供的Demo代码更是直接给出了在Spring环境下实现一阶段提交的多数据源事务管理示例。<br>不过需要注意的是，原示例是基于spring 3.0之前的版本，如果你使用spring 3.0+,会得到如下错误：java.lang.IllegalStateException: Cannot activate transaction synchronization - already active，如果使用spring 3.0+，你需要参考<br><a href="https://github.com/SpringSource/spring-data-graph/blob/master/spring-data-neo4j/src/main/java/org/springframework/data/neo4j/transaction/ChainedTransactionManager.java" target="_blank">spring-data-neo4j</a><br>的实现。鉴于Best Efforts 1PC模式的性能优势，以及相对简单的实现方式，它被大多数的sharding框架和项目采用。</p>
 <h2>事务补偿机制</h2>
 <p>对于那些对性能要求很高，但对一致性要求并不高的系统，往往并不苛求系统的实时一致性，只要在一个允许的时间周期内达到最终一致性即可，这使得事务补偿机制成为一种可行的方案。事务补偿机制最初被提出是在“长事务”的处理中，但是对于分布式系统确保一致性也有很好的参考意义。笼统地讲，与事务在执行中发生错误后立即回滚的方式不同，事务补偿是一种事后检查并补救的措施，它只期望在一个容许时间周期内得到最终一致的结果就可以了。事务补偿的实现与系统业务紧密相关，并没有一种标准的处理方式。一些常见的实现方式有：对数据进行对帐检查;基于日志进行比对;定期同标准数据来源进行同步，等等。</p>
 <h2>小结</h2>
@@ -162,6 +154,8 @@
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -181,7 +175,7 @@
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -223,7 +217,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -236,7 +230,8 @@
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

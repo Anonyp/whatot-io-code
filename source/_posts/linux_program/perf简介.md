@@ -1,6 +1,6 @@
 title: perf 简介
 date: 2013-06-27 21:06:33
-categories:
+categories: linux_program
 tags: [program, perf]
 ---
 

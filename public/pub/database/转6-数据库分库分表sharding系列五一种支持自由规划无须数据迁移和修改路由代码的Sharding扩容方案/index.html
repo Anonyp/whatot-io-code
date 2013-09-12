@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>转:6-数据库分库分表(sharding)系列(五)一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案 | database | Whatot 日常积累</title>
+  <title>转:6-数据库分库分表(sharding)系列(五)一种支持自由规划无须数据迁移和修改路由代码的Sharding扩容方案 | Whatot 日常积累</title>
   <meta name="author" content="whatot">
   
   <meta name="description" content="whatot blog">
@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,10 +65,9 @@
     </header>
     <div class="entry">
       
-        <p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7970268">http://blog.csdn.net/bluishglc/article/details/7970268</a> ,转载请注明出处！</p>
+        <p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7970268" target="_blank">http://blog.csdn.net/bluishglc/article/details/7970268</a> ,转载请注明出处！</p>
 <p>版权声明：本文由本人撰写并发表于2012年9月份的《程序员》杂志，原文题目《一种支持自由规划的Sharding扩容方案——主打无须数据迁移和修改路由代码》，此处作为本系列的第五篇文章进行转载, 本文版权归《程序员》杂志所有，未经许可不得转载！</p>
-<p>作为一种数据存储层面上的水平伸缩解决方案，数据库Sharding技术由来已久，很多海量数据系统在其发展演进的历程中都曾经历过分库分表的Sharding改造阶段。简单地说，Sharding就是将原来单一数据库按照一定的规则进行切分，把数据分散到多台物理机（我们称之为Shard)上存储，从而突破单机限制，使系统能以Scale-Out的方式应对不断上涨的海量数据，但是这种切分对上层应用来说是透明的，多个物理上分布的数据库在逻辑上依然是一个库。实现Sharding需要解决一系列关键的技术问题，这些问题主要包括：切分策略、节点路由、全局主键生成、跨节点排序/分组/表关联、多数据源事务处理和数据库扩容等。关于这些问题可以参考笔者的博客专栏<a href="http://blog.csdn.net/column/details/sharding.html">http://blog.csdn.net/column/details/sharding.html</a> 本文将重点围绕“数据库扩容”进行深入讨论，并提出一种允许自由规划并能避免数据迁移和修改路由代码的Sharding扩容方案。
-<a name="more"></a></p>
+<p>作为一种数据存储层面上的水平伸缩解决方案，数据库Sharding技术由来已久，很多海量数据系统在其发展演进的历程中都曾经历过分库分表的Sharding改造阶段。简单地说，Sharding就是将原来单一数据库按照一定的规则进行切分，把数据分散到多台物理机（我们称之为Shard)上存储，从而突破单机限制，使系统能以Scale-Out的方式应对不断上涨的海量数据，但是这种切分对上层应用来说是透明的，多个物理上分布的数据库在逻辑上依然是一个库。实现Sharding需要解决一系列关键的技术问题，这些问题主要包括：切分策略、节点路由、全局主键生成、跨节点排序/分组/表关联、多数据源事务处理和数据库扩容等。关于这些问题可以参考笔者的博客专栏<a href="http://blog.csdn.net/column/details/sharding.html" target="_blank">http://blog.csdn.net/column/details/sharding.html</a> 本文将重点围绕“数据库扩容”进行深入讨论，并提出一种允许自由规划并能避免数据迁移和修改路由代码的Sharding扩容方案。<br><a id="more"></a></p>
 <h2>Sharding扩容——系统维护不能承受之重</h2>
 <p>任何Sharding系统，在上线运行一段时间后，数据就会积累到当前节点规模所能承载的上限，此时就需要对数据库进行扩容了，也就是增加新的物理结点来分摊数据。如果系统使用的是基于ID进行散列的路由方式，那么团队需要根据新的节点规模重新计算所有数据应处的目标Shard，并将其迁移过去，这对团队来说无疑是一个巨大的维护负担；而如果系统是按增量区间进行路由(如每1千万条数据或是每一个月的数据存放在一个节点上 )，虽然可以避免数据的迁移，却有可能带来“热点”问题，也就是近期系统的读写都集中在最新创建的节点上(很多系统都有此类特点：新生数据的读写频率明显高于旧有数据)，从而影响了系统性能。面对这种两难的处境，Sharding扩容显得异常困难。</p>
 <p>一般来说，“理想”的扩容方案应该努力满足以下几个要求：</p>
@@ -98,9 +96,7 @@
 <p><img src="/img/6-图3.对应Sharding元数据.jpg" alt="6-图3.对应Sharding元数据.jpg"></p>
 <p>图3. 对应Sharding元数据</p>
 <h4>阶段二：系统扩容</h4>
-<p>经过一段时间的运行，当原表总数据逼近4000W条上限时，系统就需要扩容了。为了演示方案的灵活性，我们假设现在有三台服务器Shard2、Shard3、Shard4，其性能和存储能力表现依次为
-Shard2 &lt; Shard3 &lt; Shard4，
-我们安排Shard2储存1000W条记录，Shard3储存2000W条记录，Shard4储存3000W条记录，这样，该表的总存储能力将由扩容前的4000W条提升到10000W条，以下是详细的规划方案：</p>
+<p>经过一段时间的运行，当原表总数据逼近4000W条上限时，系统就需要扩容了。为了演示方案的灵活性，我们假设现在有三台服务器Shard2、Shard3、Shard4，其性能和存储能力表现依次为<br>Shard2 &lt; Shard3 &lt; Shard4，<br>我们安排Shard2储存1000W条记录，Shard3储存2000W条记录，Shard4储存3000W条记录，这样，该表的总存储能力将由扩容前的4000W条提升到10000W条，以下是详细的规划方案：</p>
 <p><img src="/img/6-图4.二次扩容6000W存储规模的规划方案.jpg" alt="6-图4.二次扩容6000W存储规模的规划方案.jpg"></p>
 <p>图4. 二次扩容6000W存储规模的规划方案</p>
 <p>相应拓扑结构表数据下：</p>
@@ -194,6 +190,8 @@ Shard2 &lt; Shard3 &lt; Shard4，
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -213,7 +211,7 @@ Shard2 &lt; Shard3 &lt; Shard4，
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -255,7 +253,7 @@ Shard2 &lt; Shard3 &lt; Shard4，
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -268,7 +266,8 @@ Shard2 &lt; Shard3 &lt; Shard4，
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

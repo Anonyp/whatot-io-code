@@ -1,6 +1,6 @@
 title: 转:旁观者昏:为了人类心智的荣耀--for张益唐
 date: 2013-06-20 21:08:45
-categories:
+categories: thought
 tags: [thought, math]
 ---
 

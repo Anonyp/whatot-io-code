@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,29 +65,26 @@
     </header>
     <div class="entry">
       
-        <p>原文地址：
-<a href="http://igoro.com/archive/gallery-of-processor-cache-effects/"><a href="http://igoro.com/archive/gallery-of-processor-cache-effects/">http://igoro.com/archive/gallery-of-processor-cache-effects/</a></a></p>
+        <p>原文地址：<br><a href="http://igoro.com/archive/gallery-of-processor-cache-effects/" target="_blank"><a href="http://igoro.com/archive/gallery-of-processor-cache-effects/">http://igoro.com/archive/gallery-of-processor-cache-effects/</a></a></p>
 <p>Most of my readers will understand that cache is a fast but small type of memory that stores recently accessed memory locations.  This description is reasonably accurate, but the “boring” details of how processor caches work can help a lot when trying to understand program performance.</p>
 <p>In this blog post, I will use code samples to illustrate various aspects of how caches work, and what is the impact on the performance of real-world programs.</p>
 <p>The examples are in C#, but the language choice has little impact on the performance scores and the conclusions they lead to.</p>
-<a name="more"></a>
+<a id="more"></a>
 
 <h1>Example 1: Memory accesses and performance</h1>
 <p>How much faster do you expect Loop 2 to run, compared Loop 1?</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">int</span>[] arr = new <span class="keyword">int</span>[<span class="number">64</span> * <span class="number">1024</span> * <span class="number">1024</span>];
+<pre><code><span class="keyword">int</span>[] arr = new <span class="keyword">int</span>[<span class="number">64</span> * <span class="number">1024</span> * <span class="number">1024</span>];
 
 <span class="comment">// Loop 1</span>
 <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr<span class="variable">.Length</span>; i++) arr[i] *= <span class="number">3</span>;
 
 <span class="comment">// Loop 2</span>
-<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr<span class="variable">.Length</span>; i += <span class="number">16</span>) arr[i] *= <span class="number">3</span>;
-</pre></figure></code></pre>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr<span class="variable">.Length</span>; i += <span class="number">16</span>) arr[i] *= <span class="number">3</span>;</code></pre>
 <p>The first loop multiplies every value in the array by 3, and the second loop multiplies only every 16-th. The second loop only does about 6% of the work of the first loop, but on modern machines, the two for-loops take about the same time: 80 and 78 ms respectively on my machine.</p>
 <p>The reason why the loops take the same amount of time has to do with memory. The running time of these loops is dominated by the memory accesses to the array, not by the integer multiplications. And, as I’ll explain on Example 2, the hardware will perform the same main memory accesses for the two loops.</p>
 <h1>Example 2: Impact of cache lines</h1>
 <p>Let’s explore this example deeper. We will try other step values, not just 1 and 16:</p>
-<pre><code><figure class="highlight"><pre><span class="title">for</span> (int i = <span class="number">0</span>; <span class="title">i</span> &lt; arr.Length; <span class="title">i</span> += K) arr[i] *= <span class="number">3</span>;
-</pre></figure></code></pre>
+<pre><code><span class="title">for</span> (int i = <span class="number">0</span>; <span class="title">i</span> &lt; arr.Length; <span class="title">i</span> += K) arr[i] *= <span class="number">3</span>;</code></pre>
 <p>Here are the running times of this loop for different step values (K):</p>
 <p><img src="/img/2013-07-27-processor-cache-01.png" alt="K change"></p>
 <p>Notice that while step is in the range from 1 to 16, the running time of the for-loop hardly changes. But from 16 onwards, the running time is halved each time we double the step.</p>
@@ -96,9 +92,9 @@
 <p>Since 16 ints take up 64 bytes (one cache line), for-loops with a step between 1 and 16 have to touch the same number of cache lines: all of the cache lines in the array. But once the step is 32, we’ll only touch roughly every other cache line, and once it is 64, only every fourth.</p>
 <p>Understanding of cache lines can be important for certain types of program optimizations. For example, alignment of data may determine whether an operation touches one or two cache lines. As we saw in the example above, this can easily mean that in the misaligned case, the operation will be twice slower.</p>
 <h1>Example 3: L1 and L2 cache sizes</h1>
-<p>Today’s computers come with two or three levels of caches, usually called L1, L2 and possibly L3. If you want to know the sizes of the different caches, you can use the <a href="http://technet.microsoft.com/en-us/sysinternals/cc835722.aspx">CoreInfo</a> SysInternals tool, or use the <a href="http://msdn.microsoft.com/en-us/library/ms683194(VS.85">GetLogicalProcessorInfo</a>.aspx) Windows API call. Both methods will also tell you the cache line sizes, in addition to the cache sizes.</p>
+<p>Today’s computers come with two or three levels of caches, usually called L1, L2 and possibly L3. If you want to know the sizes of the different caches, you can use the <a href="http://technet.microsoft.com/en-us/sysinternals/cc835722.aspx" target="_blank">CoreInfo</a> SysInternals tool, or use the <a href="http://msdn.microsoft.com/en-us/library/ms683194(VS.85" target="_blank">GetLogicalProcessorInfo</a>.aspx) Windows API call. Both methods will also tell you the cache line sizes, in addition to the cache sizes.</p>
 <p>On my machine, CoreInfo reports that I have a 32kB L1 data cache, a 32kB L1 instruction cache, and a 4MB L2 data cache. The L1 caches are per-core, and the L2 caches are shared between pairs of cores:</p>
-<pre><code><figure class="highlight"><pre><span class="comment">Logical</span> <span class="comment">Processor</span> <span class="comment">to</span> <span class="comment">Cache</span> <span class="comment">Map:</span>
+<pre><code><span class="comment">Logical</span> <span class="comment">Processor</span> <span class="comment">to</span> <span class="comment">Cache</span> <span class="comment">Map:</span>
 <span class="comment">*</span>-<span class="literal">-</span><span class="literal">-</span>  <span class="comment">Data</span> <span class="comment">Cache</span>          <span class="comment">0</span>, <span class="comment">Level</span> <span class="comment">1</span>,   <span class="comment">32</span> <span class="comment">KB</span>, <span class="comment">Assoc</span>   <span class="comment">8</span>, <span class="comment">LineSize</span>  <span class="comment">64</span>
 <span class="comment">*</span>-<span class="literal">-</span><span class="literal">-</span>  <span class="comment">Instruction</span> <span class="comment">Cache</span>   <span class="comment">0</span>, <span class="comment">Level</span> <span class="comment">1</span>,   <span class="comment">32</span> <span class="comment">KB</span>, <span class="comment">Assoc</span>   <span class="comment">8</span>, <span class="comment">LineSize</span>  <span class="comment">64</span>
 <span class="literal">-</span><span class="comment">*</span>-<span class="literal">-</span>  <span class="comment">Data</span> <span class="comment">Cache</span>          <span class="comment">1</span>, <span class="comment">Level</span> <span class="comment">1</span>,   <span class="comment">32</span> <span class="comment">KB</span>, <span class="comment">Assoc</span>   <span class="comment">8</span>, <span class="comment">LineSize</span>  <span class="comment">64</span>
@@ -108,31 +104,28 @@
 <span class="literal">-</span><span class="literal">-</span><span class="comment">*</span>-  <span class="comment">Instruction</span> <span class="comment">Cache</span>   <span class="comment">2</span>, <span class="comment">Level</span> <span class="comment">1</span>,   <span class="comment">32</span> <span class="comment">KB</span>, <span class="comment">Assoc</span>   <span class="comment">8</span>, <span class="comment">LineSize</span>  <span class="comment">64</span>
 <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="comment">*</span>  <span class="comment">Data</span> <span class="comment">Cache</span>          <span class="comment">3</span>, <span class="comment">Level</span> <span class="comment">1</span>,   <span class="comment">32</span> <span class="comment">KB</span>, <span class="comment">Assoc</span>   <span class="comment">8</span>, <span class="comment">LineSize</span>  <span class="comment">64</span>
 <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="comment">*</span>  <span class="comment">Instruction</span> <span class="comment">Cache</span>   <span class="comment">3</span>, <span class="comment">Level</span> <span class="comment">1</span>,   <span class="comment">32</span> <span class="comment">KB</span>, <span class="comment">Assoc</span>   <span class="comment">8</span>, <span class="comment">LineSize</span>  <span class="comment">64</span>
-<span class="literal">-</span><span class="literal">-</span><span class="comment">**</span>  <span class="comment">Unified</span> <span class="comment">Cache</span>       <span class="comment">1</span>, <span class="comment">Level</span> <span class="comment">2</span>,    <span class="comment">4</span> <span class="comment">MB</span>, <span class="comment">Assoc</span>  <span class="comment">16</span>, <span class="comment">LineSize</span>  <span class="comment">64
-</pre></figure></code></pre>
+<span class="literal">-</span><span class="literal">-</span><span class="comment">**</span>  <span class="comment">Unified</span> <span class="comment">Cache</span>       <span class="comment">1</span>, <span class="comment">Level</span> <span class="comment">2</span>,    <span class="comment">4</span> <span class="comment">MB</span>, <span class="comment">Assoc</span>  <span class="comment">16</span>, <span class="comment">LineSize</span>  <span class="comment">64</code></pre>
 <p>Let’s verify these numbers by an experiment. To do that, we’ll step over an array incrementing every 16th integer – a cheap way to modify every cache line. When we reach the last value, we loop back to the beginning. We’ll experiment with different array sizes, and we should see drops in the performance at the array sizes where the array spills out of one cache level.</p>
 <p>Here is the program:</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">int</span> steps = <span class="number">64</span> * <span class="number">1024</span> * <span class="number">1024</span>; <span class="comment">// Arbitrary number of steps</span>
+<pre><code><span class="keyword">int</span> steps = <span class="number">64</span> * <span class="number">1024</span> * <span class="number">1024</span>; <span class="comment">// Arbitrary number of steps</span>
 <span class="keyword">int</span> lengthMod = arr<span class="variable">.Length</span> - <span class="number">1</span>;
 <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; steps; i++)
 {
 arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="comment">// (x &amp; lengthMod) is equal to (x % arr.Length)</span>
-}
-</pre></figure></code></pre>
+}</code></pre>
 <p>And here are the timings:</p>
 <p><img src="/img/2013-07-27-processor-cache-02.png" alt="timings changes"></p>
 <p>You can see distinct drops after 32kB and 4MB – the sizes of L1 and L2 caches on my machine.</p>
 <h1>Example 4: Instruction-level parallelism</h1>
 <p>Now, let’s take a look at something different. Out of these two loops, which one would you expect to be faster?</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">int</span> steps = <span class="number">256</span> * <span class="number">1024</span> * <span class="number">1024</span>;
+<pre><code><span class="keyword">int</span> steps = <span class="number">256</span> * <span class="number">1024</span> * <span class="number">1024</span>;
 <span class="keyword">int</span>[] a = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];
 
 <span class="comment">// Loop 1</span>
 <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;steps; i++) { a[<span class="number">0</span>]++; a[<span class="number">0</span>]++; }
 
 <span class="comment">// Loop 2</span>
-<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;steps; i++) { a[<span class="number">0</span>]++; a[<span class="number">1</span>]++; }
-</pre></figure></code></pre>
+<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;steps; i++) { a[<span class="number">0</span>]++; a[<span class="number">1</span>]++; }</code></pre>
 <p>It turns out that the second loop is about twice faster than the first loop, at least on all of the machines I tested. Why? This has to do with the dependencies between operations in the two loop bodies.</p>
 <p>In the body of the first loop, operations depend on each other as follows:</p>
 <p><img src="/img/2013-07-27-processor-cache-03.png" alt="operations depends"></p>
@@ -155,7 +148,7 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
 <p>For example, the 4MB L2 cache on my machine is 16-way associative. All 64-byte memory chunks are partitioned into sets (based on the lowest order bits of the chunk index), and chunks in the same set compete for 16 slots in the L2 cache.</p>
 <p>Since the L2 cache has 65,536 slots, and each set will need 16 slots in the cache, we will have 4,096 sets. So, the lowest 12 bits of the chunk index will determine which set the chunk belongs to (212 = 4,096). As a result, cache lines at addresses that differ by a multiple of 262,144 bytes (4096 * 64) will compete for the same slot in the cache. The cache on my machine can hold at most 16 such cache lines.</p>
 <p>In order for the effects of cache associativity to become apparent, I need to repeatedly access more than  16 elements from the same set. I will demonstrate this using the following method:</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> UpdateEveryKthByte(byte[] arr, <span class="keyword">int</span> K)
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> UpdateEveryKthByte(byte[] arr, <span class="keyword">int</span> K)
 {
     Stopwatch sw = Stopwatch<span class="variable">.StartNew</span>();
     <span class="keyword">const</span> <span class="keyword">int</span> rep = <span class="number">1024</span>*<span class="number">1024</span>; <span class="comment">// Number of iterations – arbitrary</span>
@@ -170,8 +163,7 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
 
     sw<span class="variable">.Stop</span>();
     <span class="keyword">return</span> sw<span class="variable">.ElapsedMilliseconds</span>;
-}
-</pre></figure></code></pre>
+}</code></pre>
 <p>This method increments every K-th value in the array. Once the it reaches the end of the array, it starts again from the beginning. After running sufficiently long (2^20 steps), the loop stops.</p>
 <p>I ran UpdateEveryKthByte() with different array sizes (in 1MB increments) and different step sizes. Here is a plot of the results, with blue representing long running time, and white representing short:</p>
 <p><img src="/img/2013-07-27-processor-cache-05.png" alt="UpdateEveryKthByte"></p>
@@ -197,15 +189,14 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
 <p>On multi-core machines, caches encounter another problem – consistency. Different cores have fully or partly separate caches. On my machine, L1 caches are separate (as is common), and there are two pairs of processors, each pair sharing an L2 cache. While the details vary, a modern multi-core machine will have a multi-level cache hierarchy, where the faster and smaller caches belong to individual processors.</p>
 <p>When one processor modifies a value in its cache, other processors cannot use the old value anymore. That memory location will be invalidated in all of the caches. Furthermore, since caches operate on the granularity of cache lines and not individual bytes, the entire cache line will be invalidated in all caches!</p>
 <p>To demonstrate this issue, consider this example:</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span>[] s_counter = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1024</span>];
+<pre><code><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span>[] s_counter = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1024</span>];
 <span class="keyword">private</span> <span class="keyword">void</span> UpdateCounter(<span class="keyword">int</span> position)
 {
     <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100000000</span>; j++)
     {
         s_counter[position] = s_counter[position] + <span class="number">3</span>;
     }
-}
-</pre></figure></code></pre>
+}</code></pre>
 <p>On my quad-core machine, if I call UpdateCounter with parameters 0,1,2,3 from four different threads, it will take <code>4.3 seconds</code> until all threads are done.</p>
 <p>On the other hand, if I call UpdateCounter with parameters 16,32,48,64 the operation will be done in <code>0.28 seconds</code>!</p>
 <p>Why? In the first case, all four values are very likely to end up on the same cache line. Each time a core increments the counter, it invalidates the cache line that holds all four counters. All other cores will suffer a cache miss the next time they access their own counters. This kind of thread behavior effectively disables caches, crippling the program’s performance.</p>
@@ -213,21 +204,19 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
 <p>Even when you know the basics of how caches work, the hardware will still sometimes surprise you. Different processors differ in optimizations, heuristics, and subtle details of how they do things.</p>
 <p>On some processors, L1 cache can process two accesses in parallel if they access cache lines from different banks, and serially if they belong to the same bank. Also, processors can surprise you with clever optimizations. For example, the false-sharing example that I’ve used on several machines in the past did not work well on my machine without tweaks – my home machine can optimize the execution in the simplest cases to reduce the cache invalidations.</p>
 <p>Here is one odd example of “hardware weirdness”:</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> A, B, C, D, E, F, G;
+<pre><code><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> A, B, C, D, E, F, G;
 <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> Weirdness()
 {
     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">200000000</span>; i++)
     {
         &lt;something&gt;
     }
-}
-</pre></figure></code></pre>
+}</code></pre>
 <p>When I substitute three different blocks for “<something>”, I get these timings:</p>
-<pre><code><figure class="highlight"><pre>&lt;<span class="comment">something</span>&gt;        <span class="comment">Time</span>
+<pre><code>&lt;<span class="comment">something</span>&gt;        <span class="comment">Time</span>
 <span class="comment">A</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">B</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">C</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">D</span>+<span class="literal">+</span><span class="comment">;</span>     <span class="comment">719</span> <span class="comment">ms</span>
 <span class="comment">A</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">C</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">E</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">G</span>+<span class="literal">+</span><span class="comment">;</span>     <span class="comment">448</span> <span class="comment">ms</span>
-<span class="comment">A</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">C</span>+<span class="literal">+</span><span class="comment">;</span>        <span class="comment">518</span> <span class="comment">ms
-</pre></figure></code></pre>
+<span class="comment">A</span>+<span class="literal">+</span><span class="comment">;</span> <span class="comment">C</span>+<span class="literal">+</span><span class="comment">;</span>        <span class="comment">518</span> <span class="comment">ms</code></pre>
 <p>Incrementing fields A,B,C,D takes longer than incrementing fields A,C,E,G. And what’s even weirder, incrementing just A and C takes longer than increment A and C and E and G!</p>
 <p>I don’t know for sure what is the reason behind these numbers, but I suspect it is related to memory banks. If someone can explain these numbers, I’d be very curious to hear about it.</p>
 <p>The lesson of this example is that can be difficult to fully predict hardware performance. There is a lot that you can predict, but ultimately, it is very important to measure and verify your assumptions.</p>
@@ -306,6 +295,8 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -325,7 +316,7 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -367,7 +358,7 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -380,7 +371,8 @@ arr[(i * <span class="number">16</span>) &amp; lengthMod]++; <span class="commen
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

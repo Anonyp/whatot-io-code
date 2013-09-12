@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,20 +65,16 @@
     </header>
     <div class="entry">
       
-        <p><a href="http://yysfire.github.io/linux/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8BLinux%E7%BB%88%E7%AB%AF%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81256%E8%89%B2.html">原文来源:</a></p>
+        <p><a href="http://yysfire.github.io/linux/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8BLinux%E7%BB%88%E7%AB%AF%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81256%E8%89%B2.html" target="_blank">原文来源:</a></p>
 <p>运行以下命令, 若256种颜色全部输出，就表示支持256色。</p>
-<pre><code><figure class="highlight"><pre>$ (x=`tput op` y=`printf %76s`;<span class="keyword">for</span> i <span class="keyword">in</span> {0..256};<span class="keyword">do</span> o=00<span class="variable">$i</span>;<span class="keyword">echo</span> -e <span class="variable">${o:${#o}</span>-3:3} `tput setaf <span class="variable">$i</span>;tput setab <span class="variable">$i</span>`<span class="variable">${y// /=}</span><span class="variable">$x</span>;<span class="keyword">done</span>)
-</pre></figure></code></pre>
+<pre><code>$ (x=`tput op` y=`printf %76s`;<span class="keyword">for</span> i <span class="keyword">in</span> {0..256};<span class="keyword">do</span> o=00<span class="variable">$i</span>;<span class="keyword">echo</span> -e <span class="variable">${o:${#o}</span>-3:3} `tput setaf <span class="variable">$i</span>;tput setab <span class="variable">$i</span>`<span class="variable">${y// /=}</span><span class="variable">$x</span>;<span class="keyword">done</span>)</code></pre>
 <p>或者运行<code>tput colors</code>，输出现在终端所支持的颜色位数</p>
 <p>下列命令会输出你所支持的所有终端模拟器，以及它们支持的颜色位数，可能的值有：8, 15, 16, 52, 64, 88 和 256.</p>
-<pre><code><figure class="highlight"><pre>$ <span class="keyword">for</span> T <span class="keyword">in</span> `find /usr/share/terminfo -type f -printf <span class="string">'%f '</span>`;<span class="keyword">do</span> <span class="keyword">echo</span> <span class="string">"<span class="variable">$T</span> `tput -T <span class="variable">$T</span> colors`"</span>;<span class="keyword">done</span>|sort -nk2|tail -n20
-</pre></figure></code></pre>
+<pre><code>$ <span class="keyword">for</span> T <span class="keyword">in</span> `find /usr/share/terminfo -type f -printf <span class="string">'%f '</span>`;<span class="keyword">do</span> <span class="keyword">echo</span> <span class="string">"<span class="variable">$T</span> `tput -T <span class="variable">$T</span> colors`"</span>;<span class="keyword">done</span>|sort -nk2|tail -n20</code></pre>
 <p>可以在终端的配置文件，例如 .bashrc 中加入以下内容，使其支持256色：</p>
-<pre><code><figure class="highlight"><pre><span class="title">export</span> TERM=vte-256color
-</pre></figure></code></pre>
+<pre><code><span class="title">export</span> TERM=vte-256color</code></pre>
 <p>VIM 终端支持 256 色，需要在vimrc中添加</p>
-<pre><code><figure class="highlight"><pre><span class="operator"><span class="keyword">set</span> t_Co=<span class="number">256</span>
-</pre></figure></code></pre>
+<pre><code><span class="operator"><span class="keyword">set</span> t_Co=<span class="number">256</span></code></pre>
 
       
     </div>
@@ -153,6 +148,8 @@
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -172,7 +169,7 @@
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -214,7 +211,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -227,7 +224,8 @@
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

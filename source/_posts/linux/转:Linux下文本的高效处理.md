@@ -1,6 +1,6 @@
 title: 转:Linux下文本的高效处理
 date: 2013-07-27 12:11:24
-categories:
+categories: linux
 tags: [shell, linux]
 ---
 

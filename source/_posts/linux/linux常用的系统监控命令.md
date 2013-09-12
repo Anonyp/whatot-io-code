@@ -1,6 +1,6 @@
 title: linux常用的系统监控命令
 date: 2013-07-31 21:06:19
-categories:
+categories: linux
 tags: [shell, linux]
 ---
 

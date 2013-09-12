@@ -1,6 +1,6 @@
 title: 转:高效操作Bash
 date: 2013-07-27 10:28:07
-categories:
+categories: linux
 tags: [linux, bash, shell]
 ---
 

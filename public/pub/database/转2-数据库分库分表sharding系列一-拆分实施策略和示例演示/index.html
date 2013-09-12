@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>转:2-数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示 | database | Whatot 日常积累</title>
+  <title>转:2-数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示 | Whatot 日常积累</title>
   <meta name="author" content="whatot">
   
   <meta name="description" content="whatot blog">
@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,10 +65,8 @@
     </header>
     <div class="entry">
       
-        <p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7696085">http://blog.csdn.net/bluishglc/article/details/7696085</a> ,转载请注明出处！</p>
-<p>本文着重介绍sharding切分策略，如果你对数据库sharding缺少基本的了解，请参考我另一篇从基础理论全面介绍sharding的文章：
-<a href="http://blog.csdn.net/bluishglc/article/details/6161475">数据库Sharding的基本思想和切分策略</a>
-<a name="more"></a></p>
+        <p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/7696085" target="_blank">http://blog.csdn.net/bluishglc/article/details/7696085</a> ,转载请注明出处！</p>
+<p>本文着重介绍sharding切分策略，如果你对数据库sharding缺少基本的了解，请参考我另一篇从基础理论全面介绍sharding的文章：<br><a href="http://blog.csdn.net/bluishglc/article/details/6161475" target="_blank">数据库Sharding的基本思想和切分策略</a><br><a id="more"></a></p>
 <h2>第一部分：实施策略</h2>
 <p><img src="/img/2-图1.数据库sharding实施策略图解.jpg" alt="图1.数据库分库分表(sharding)实施策略图解"></p>
 <p>图1.数据库分库分表(sharding)实施策略图解</p>
@@ -88,9 +85,7 @@
 <h3>3.实施阶段</h3>
 <p>如果项目在开发伊始就决定进行分库分表，则严格按照分析设计方案推进即可。如果是在中期架构演进中实施，除搭建实现sharding逻辑的基础设施外(关于该话题会在下篇文章中进行阐述)，还需要对原有SQL逐一过滤分析，修改那些因为sharding而受到影响的sql.</p>
 <h2>第二部分：示例演示</h2>
-<p>本文选择一个人尽皆知的应用：jpetstore来演示如何进行分库分表(sharding)在分析阶段的工作。由于一些个人原因，演示使用的jpetstore来自原ibatis官方的一个Demo版本，
-SVN地址为：
-<a href="http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5"><a href="http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5">http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5</a></a>。</p>
+<p>本文选择一个人尽皆知的应用：jpetstore来演示如何进行分库分表(sharding)在分析阶段的工作。由于一些个人原因，演示使用的jpetstore来自原ibatis官方的一个Demo版本，<br>SVN地址为：<br><a href="http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5" target="_blank"><a href="http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5">http://mybatis.googlecode.com/svn/tags/java_release_2.3.4-726/jpetstore-5</a></a>。</p>
 <p>关于jpetstore的业务逻辑这里不再介绍，这是一个非常简单的电商系统原型，其领域模型如下图：</p>
 <p><img src="/img/2-图2.jpetstore领域模型.jpg" alt="图2.jpetstore领域模型.jpg"></p>
 <p>图2. jpetstore领域模型</p>
@@ -177,6 +172,8 @@ SVN地址为：
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -196,7 +193,7 @@ SVN地址为：
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -238,7 +235,7 @@ SVN地址为：
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -251,7 +248,8 @@ SVN地址为：
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

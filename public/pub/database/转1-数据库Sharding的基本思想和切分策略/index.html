@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>转:1-数据库Sharding的基本思想和切分策略 | database | Whatot 日常积累</title>
+  <title>转:1-数据库Sharding的基本思想和切分策略 | Whatot 日常积累</title>
   <meta name="author" content="whatot">
   
   <meta name="description" content="whatot blog">
@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,9 +65,8 @@
     </header>
     <div class="entry">
       
-        <p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/6161475">http://blog.csdn.net/bluishglc/article/details/6161475</a> ,转载请注明出处！</p>
-<p>本文着重介绍sharding的基本思想和理论上的切分策略，关于更加细致的实施策略和参考事例请参考我的另一篇博文：<a href="http://blog.csdn.net/bluishglc/article/details/7696085">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a>
-<a name="more"></a></p>
+        <p>本文原文连接: <a href="http://blog.csdn.net/bluishglc/article/details/6161475" target="_blank">http://blog.csdn.net/bluishglc/article/details/6161475</a> ,转载请注明出处！</p>
+<p>本文着重介绍sharding的基本思想和理论上的切分策略，关于更加细致的实施策略和参考事例请参考我的另一篇博文：<a href="http://blog.csdn.net/bluishglc/article/details/7696085" target="_blank">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a><br><a id="more"></a></p>
 <h2>一、基本思想</h2>
 <p>Sharding的基本思想就要把一个数据库切分成多个部分放到不同的数据库(server)上，从而缓解单一数据库的性能问题。不太严格的讲，对于海量数据的数据库，如果是因为表多而数据多，这时候适合使用垂直切分，即把关系紧密（比如同一模块）的表切分出来放在一个server上。如果表并不多，但每张表的数据非常多，这时候适合水平切分，即把表的数据按某种规则（比如按ID散列）切分到多个数据库(server)上。当然，现实中更多是这两种情况混杂在一起，这时候需要根据实际情况做出选择，也可能会综合使用垂直与水平切分，从而将原有数据库切分成类似矩阵一样可以无限扩充的数据库(server)阵列。下面分别详细地介绍一下垂直切分和水平切分.</p>
 <p>垂直切分的最大特点就是规则简单，实施也更为方便，尤其适合各业务之间的耦合度非常低，相互影响很小，业务逻辑非常清晰的系统。在这种系统中，可以很容易做到将不同业务模块所使用的表分拆到不同的数据库中。根据不同的表来进行拆分，对应用程序的影响也更小，拆分规则也会比较简单清晰。（这也就是所谓的”share nothing”）。</p>
@@ -81,8 +79,7 @@
 <p>如前面所提到的，切分是按先垂直切分再水平切分的步骤进行的。垂直切分的结果正好为水平切分做好了铺垫。垂直切分的思路就是分析表间的聚合关系，把关系紧密的表放在一起。多数情况下可能是同一个模块，或者是同一“聚集”。这里的“聚集”正是领域驱动设计里所说的聚集。在垂直切分出的表聚集内，找出“根元素”（这里的“根元素”就是领域驱动设计里的“聚合根”），按“根元素”进行水平切分，也就是从“根元素”开始，把所有和它直接与间接关联的数据放入一个shard里。这样出现跨shard关联的可能性就非常的小。应用程序就不必打断既有的表间关联。比如：对于社交网站，几乎所有数据最终都会关联到某个用户上，基于用户进行切分就是最好的选择。再比如论坛系统，用户和论坛两个模块应该在垂直切分时被分在了两个shard里，对于论坛模块来说，Forum显然是聚合根，因此按Forum进行水平切分，把Forum里所有的帖子和回帖都随Forum放在一个shard里是很自然的。</p>
 <p>对于共享数据数据，如果是只读的字典表，每个shard里维护一份应该是一个不错的选择，这样不必打断关联关系。如果是一般数据间的跨节点的关联，就必须打断。</p>
 <p><strong>需要特别说明的是</strong>：当同时进行垂直和水平切分时，切分策略会发生一些微妙的变化。比如：在只考虑垂直切分的时候，被划分到一起的表之间可以保持任意的关联关系，因此你可以按“功能模块”划分表格，但是一旦引入水平切分之后，表间关联关系就会受到很大的制约，通常只能允许一个主表（以该表ID进行散列的表）和其多个次表之间保留关联关系，也就是说：当同时进行垂直和水平切分时，在垂直方向上的切分将不再以“功能模块”进行划分，而是需要更加细粒度的垂直切分，而这个粒度与领域驱动设计中的“聚合”概念不谋而合，甚至可以说是完全一致，每个shard的主表正是一个聚合中的聚合根！这样切分下来你会发现数据库分被切分地过于分散了（shard的数量会比较多，但是shard里的表却不多），为了避免管理过多的数据源，充分利用每一个数据库服务器的资源，可以考虑将业务上相近，并且具有相近数据增长速率（主表数据量在同一数量级上）的两个或多个shard放到同一个数据源里，每个shard依然是独立的，它们有各自的主表，并使用各自主表ID进行散列，不同的只是它们的散列取模（即节点数量）必需是一致的。</p>
-<p>（本文着重介绍sharding的基本思想和理论上的切分策略，关于更加细致的实施策略和参考事例请参考我的另一篇博文：
-<a href="http://blog.csdn.net/bluishglc/article/details/7696085">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a>）</p>
+<p>（本文着重介绍sharding的基本思想和理论上的切分策略，关于更加细致的实施策略和参考事例请参考我的另一篇博文：<br><a href="http://blog.csdn.net/bluishglc/article/details/7696085" target="_blank">数据库分库分表(sharding)系列(一) 拆分实施策略和示例演示</a>）</p>
 <h3>1. 事务问题：</h3>
 <p>解决事务问题目前有两种可行的方案：分布式事务和通过应用程序与数据库共同控制实现事务下面对两套方案进行一个简单的对比。</p>
 <blockquote>
@@ -102,8 +99,7 @@
 <p>只要是时行切分，跨节点Join的问明是不可避免的。但是良好的设计和切分却可以减少此类情况的发生。解决这一问题的普遍做法是分两次查询实现。在第一次查询的结果集中找出关联数据的id,根据这些id发起第二次请求得到关联数据。</p>
 <h3>3. 跨节点的count,order by,group by以及聚合函数问题</h3>
 <p>这些是一类问题，因为它们都需要基于全部数据集合进行计算。多数的代理都不会自动处理合并工作。解决方案：与解决跨节点join问题的类似，分别在各个节点上得到结果后在应用程序端进行合并。和join不同的是每个结点的查询可以并行执行，因此很多时候它的速度要比单一大表快很多。但如果结果集很大，对应用程序内存的消耗是一个问题。</p>
-<p>参考资料：
-《MySQL性能调优与架构设计》</p>
+<p>参考资料：<br>《MySQL性能调优与架构设计》</p>
 <p>注：本文图片摘自《MySQL性能调优与架构设计》一 书</p>
 
       
@@ -178,6 +174,8 @@
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -197,7 +195,7 @@
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -239,7 +237,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -252,7 +250,8 @@
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

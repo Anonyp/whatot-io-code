@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -66,15 +65,13 @@
     </header>
     <div class="entry">
       
-        <p><a href="http://blog.jobbole.com/40844/">本文出处</a>
-  翻译: <a href="http://weibo.com/1851467917">@deuso_ICT</a></p>
-<p><a href="http://www.gamedev.net/page/resources/_/technical/general-programming/a-journey-through-the-cpu-pipeline-r3115#">英文原文</a></p>
+        <p><a href="http://blog.jobbole.com/40844/" target="_blank">本文出处</a><br>  翻译: <a href="http://weibo.com/1851467917" target="_blank">@deuso_ICT</a></p>
+<p><a href="http://www.gamedev.net/page/resources/_/technical/general-programming/a-journey-through-the-cpu-pipeline-r3115#" target="_blank">英文原文</a></p>
 <p>作为程序员，CPU在我们的工作中扮演了核心角色，因此了解处理器内部的工作方式对程序员来说不无裨益。</p>
 <p>CPU是如何工作的呢？一条指令执行需要多长时间？当我们讨论某个新款处理器拥有12级流水线还是18级流水线，甚至是更深的31级流水线时，这到些都意味着什么呢？</p>
 <p>应用程序通常会将CPU看作是黑盒子。程序中的指令按照顺序依次进入CPU，执行完之后再按顺序依次从CPU中出来，而内部到底发生了什么，我们通常并不了解。</p>
 <p>对我们程序员来说，尤其是对做程序性能调优工作的程序员来说，学习CPU内部的细节非常必要。否则，如果你不知道CPU的内部结构，那如何才能针对CPU做性能优化？</p>
-<p>本文所关注的就是专门针对X86处理器流水线的工作原理。
-<a name="more"></a></p>
+<p>本文所关注的就是专门针对X86处理器流水线的工作原理。<br><a id="more"></a></p>
 <h2>你需要掌握的预备知识</h2>
 <ul>
 <li><p>首先，阅读本文你需要了解编程，最好了解一点汇编语言。如果你还不知道指令指针(instruction pointer)是什么，那么本文对你来说可能有些难。你需要知道什么是寄存器，指令和缓存，如果不明白它们是什么，你需要尽快查找资料了解一下。</p>
@@ -111,10 +108,9 @@
 <p>I486拥有五级流水线。分别是：取指(Fetch)，译码(D1, main decode)，转址(D2, translate)，执行(EX, execute)，写回(WB)。某个指令可以在流水线的任何一级。</p>
 <p><img src="/img/2013-06-06-CPU-I486拥有五级流水线.png" alt="I486拥有五级流水线"></p>
 <p>但是这样的流水线有一个明显的缺陷。对于下面的指令代码，它们的功能是将两个变量的内容进行交换。</p>
-<pre><code><figure class="highlight"><pre><span class="keyword">XOR</span> a, b
+<pre><code><span class="keyword">XOR</span> a, b
 <span class="keyword">XOR</span> b, a
-<span class="keyword">XOR</span> a, b
-</pre></figure></code></pre>
+<span class="keyword">XOR</span> a, b</code></pre>
 <p>从8086直到386处理器都没有流水线。处理器一次只能执行一条指令。再这样的架构下，上面的代码执行并不会存在问题。</p>
 <p>但是i486处理器是首个拥有流水线的x86处理器，它执行上面的代码会发生什么呢？当你一下去观察很多指令在流水线中运行，你会觉得混乱，所以你需要回头参考上面的图。</p>
 <p>第一步是第一条指令进入取指阶段；然后在第二步第一条指令进入译码阶段，同时第二条指令进入取指阶段；第三步第一条指令进入转址阶段，第二条指令进入译码阶段，第三条指令进入取指阶段。但是在第四步会出现问题，第一条指令会进入执行阶段，而其他指令却不能继续向前移动。第二条xor指令需要第一条xor指令计算的结果a，但是直到第一条指令执行完成才会写回。所以流水线的其他指令就会在当前流水级等待直到第一条指令的执行和写回阶段完成。第二条指令会等待第一条指令完成才能进入流水线下一级，同样第三条指令也要等待第二条指令完成。</p>
@@ -246,6 +242,8 @@
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -265,7 +263,7 @@
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -307,7 +305,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -320,7 +318,8 @@
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 

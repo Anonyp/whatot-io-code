@@ -1,6 +1,6 @@
 title: 转:C语言函数指针基础
 date: 2013-08-03 12:16:15
-categories:
+categories: c
 tags: [c, language, program]
 ---
 

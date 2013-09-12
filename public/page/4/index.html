@@ -22,7 +22,6 @@
   <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
 
@@ -67,10 +66,9 @@
     </header>
     <div class="entry">
       
-        <p><a href="http://www.uml.org.cn/pzgl/201112163.asp">原文出处</a></p>
+        <p><a href="http://www.uml.org.cn/pzgl/201112163.asp" target="_blank">原文出处</a></p>
 <p>作者：dbzhang800，发布于2011-12-16</p>
-<p>在本文中，我向大家介绍的是在大约一年前我为自己的项目(包括工作和私人项目)引入的且已被证实非常成功的一个开发模型(development model)。这段时间我一直想写点关于它的东西，但在此之前，我却从未能抽出充足的时间来完成这件事。我不会谈论项目的任何细节，只涉及分支策略(branching strategy)和发布管理(release management)。
-
+<p>在本文中，我向大家介绍的是在大约一年前我为自己的项目(包括工作和私人项目)引入的且已被证实非常成功的一个开发模型(development model)。这段时间我一直想写点关于它的东西，但在此之前，我却从未能抽出充足的时间来完成这件事。我不会谈论项目的任何细节，只涉及分支策略(branching strategy)和发布管理(release management)。<br>
       
     </div>
     <footer>
@@ -105,19 +103,14 @@
     </header>
     <div class="entry">
       
-        <p><a href="http://blog.jobbole.com/39186/">转:世界上最简单的无锁哈希表</a></p>
-<p>英文原文：<a href="http://preshing.com/20130605/the-worlds-simplest-lock-free-hash-table">preshing</a>，
-感谢<a href="http://weibo.com/1913446335">@浅水清流</a> 的热心翻译。如果其他朋友也有不错的原创或译文，可以尝试推荐给伯乐在线。以下是译文。</p>
+        <p><a href="http://blog.jobbole.com/39186/" target="_blank">转:世界上最简单的无锁哈希表</a></p>
+<p>英文原文：<a href="http://preshing.com/20130605/the-worlds-simplest-lock-free-hash-table" target="_blank">preshing</a>，<br>感谢<a href="http://weibo.com/1913446335" target="_blank">@浅水清流</a> 的热心翻译。如果其他朋友也有不错的原创或译文，可以尝试推荐给伯乐在线。以下是译文。</p>
 <hr>
 <p>无锁哈希表（Lock-Free Hash Table ）可以提高多线程下的性能表现，但是因为实现一个无锁哈希表本身的复杂度不小。（ps：真正的复杂在于出错之后的调试，因为多线程下的调试本身就很复杂，引入无锁数据结构之后，传统的看堆栈信息和打印log都基本上没有意义了。堆栈中的数据可能被并发访问破坏，而打印log本身可能会改变程序执行时对数据访问的时序。一个比较可行的做法是实现一个无锁版本和一个传统数据结构+锁的版本，出错后通过替换来定位是无锁数据结构本身的bug还是其他逻辑的bug）。所以对一个项目而言，无锁数据结构基本上是一把双刃剑。</p>
-<p>据我所知，第一个用于实际开发的无锁哈希表是
-<a href="http://www.azulsystems.com/blog/cliff">Dr. Cliff Click</a>
-为Java而写。</p>
-<p>在2007年他发布了这个无锁哈希表的源码并且在google做了关于它的报告
-（<a href="http://www.youtube.com/watch?v=HJ-719EGIts">视频</a>）。</p>
-<p>我承认，在我第一次看这个报告的时候，我对它的大部分内容都不理解。Dr. Cliff Click是这个领域的先驱。
-(Maged M. Michael 在IBM做了大量关于无锁数据结构的研究。这个是2002年的一篇论文，</p>
-<p>关于哈希表，<a href="http://www.research.ibm.com/people/m/michael/spaa-2002.pdf">http://www.research.ibm.com/people/m/michael/spaa-2002.pdf</a>)</p>
+<p>据我所知，第一个用于实际开发的无锁哈希表是<br><a href="http://www.azulsystems.com/blog/cliff" target="_blank">Dr. Cliff Click</a><br>为Java而写。</p>
+<p>在2007年他发布了这个无锁哈希表的源码并且在google做了关于它的报告<br>（<a href="http://www.youtube.com/watch?v=HJ-719EGIts" target="_blank">视频</a>）。</p>
+<p>我承认，在我第一次看这个报告的时候，我对它的大部分内容都不理解。Dr. Cliff Click是这个领域的先驱。<br>(Maged M. Michael 在IBM做了大量关于无锁数据结构的研究。这个是2002年的一篇论文，</p>
+<p>关于哈希表，<a href="http://www.research.ibm.com/people/m/michael/spaa-2002.pdf" target="_blank">http://www.research.ibm.com/people/m/michael/spaa-2002.pdf</a>)</p>
 <p>很幸运，6年时间足够我理解Dr. Cliff Click所做的研究。事实上，你不必做一些前沿的探索，去实现一个完美的无锁哈希表。在这里我将分享我实现的这个版本。我相信有使用C++进行多线程开发经验的程序员，可以通过这篇博客梳理以前的经验，并且完全理解它。</p>
 
       
@@ -154,16 +147,15 @@
     </header>
     <div class="entry">
       
-        <p>Original Article: <a href="http://james-iry.blogspot.co.at/2009/05/brief-incomplete-and-mostly-wrong.html">A Brief, Incomplete, and Mostly Wrong History of Programming Languages</a> by <a href="http://twitter.com/jamesiry">James Iry</a></p>
+        <p>Original Article: <a href="http://james-iry.blogspot.co.at/2009/05/brief-incomplete-and-mostly-wrong.html" target="_blank">A Brief, Incomplete, and Mostly Wrong History of Programming Languages</a> by <a href="http://twitter.com/jamesiry" target="_blank">James Iry</a></p>
 <p>(Chinese Translation by <strong>Mort Yao</strong>)</p>
-<p><a href="http://www.soimort.org/posts/160/">http://www.soimort.org/posts/160/</a></p>
+<p><a href="http://www.soimort.org/posts/160/" target="_blank">http://www.soimort.org/posts/160/</a></p>
 <ul>
 <li>警告：原文中的内容不一定都是真实的。</li>
 <li>警告：小字部分不属于原文，是翻译君为了便于读者读懂原文擅自所加的注解。当然，也不能保证一定都是真实的。</li>
-<li>为了照顾那些幽默感退化的人们，维基百科有一个主题关于：<a href="http://en.wikipedia.org/wiki/History_of_programming_languages">History of programming languages</a>。</li>
+<li>为了照顾那些幽默感退化的人们，维基百科有一个主题关于：<a href="http://en.wikipedia.org/wiki/History_of_programming_languages" target="_blank">History of programming languages</a>。</li>
 </ul>
-<p><img src="/img/in-8EZIsY6.gif" alt="">
-
+<p><img src="/img/in-8EZIsY6.gif" alt=""><br>
       
     </div>
     <footer>
@@ -198,9 +190,8 @@
     </header>
     <div class="entry">
       
-        <p>参考文章: <a href="http://edsionte.com/techblog/archives/1689">使用vim+ctags+cscope阅读内核源码</a></p>
-<p>linux内核开发与linux系统开发有所不同，系统开发是利用系统库，而内核是自包含的，不需要外部系统库的支持，所以与系统开发有所不同。
-
+        <p>参考文章: <a href="http://edsionte.com/techblog/archives/1689" target="_blank">使用vim+ctags+cscope阅读内核源码</a></p>
+<p>linux内核开发与linux系统开发有所不同，系统开发是利用系统库，而内核是自包含的，不需要外部系统库的支持，所以与系统开发有所不同。<br>
       
     </div>
     <footer>
@@ -235,15 +226,13 @@
     </header>
     <div class="entry">
       
-        <p><a href="http://blog.jobbole.com/40844/">本文出处</a>
-  翻译: <a href="http://weibo.com/1851467917">@deuso_ICT</a></p>
-<p><a href="http://www.gamedev.net/page/resources/_/technical/general-programming/a-journey-through-the-cpu-pipeline-r3115#">英文原文</a></p>
+        <p><a href="http://blog.jobbole.com/40844/" target="_blank">本文出处</a><br>  翻译: <a href="http://weibo.com/1851467917" target="_blank">@deuso_ICT</a></p>
+<p><a href="http://www.gamedev.net/page/resources/_/technical/general-programming/a-journey-through-the-cpu-pipeline-r3115#" target="_blank">英文原文</a></p>
 <p>作为程序员，CPU在我们的工作中扮演了核心角色，因此了解处理器内部的工作方式对程序员来说不无裨益。</p>
 <p>CPU是如何工作的呢？一条指令执行需要多长时间？当我们讨论某个新款处理器拥有12级流水线还是18级流水线，甚至是更深的31级流水线时，这到些都意味着什么呢？</p>
 <p>应用程序通常会将CPU看作是黑盒子。程序中的指令按照顺序依次进入CPU，执行完之后再按顺序依次从CPU中出来，而内部到底发生了什么，我们通常并不了解。</p>
 <p>对我们程序员来说，尤其是对做程序性能调优工作的程序员来说，学习CPU内部的细节非常必要。否则，如果你不知道CPU的内部结构，那如何才能针对CPU做性能优化？</p>
-<p>本文所关注的就是专门针对X86处理器流水线的工作原理。
-
+<p>本文所关注的就是专门针对X86处理器流水线的工作原理。<br>
       
     </div>
     <footer>
@@ -303,6 +292,8 @@
   
     <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
   
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
     <li><a href="/categories/python/">python</a><small>1</small></li>
   
     <li><a href="/categories/thought/">thought</a><small>2</small></li>
@@ -322,7 +313,7 @@
   
     <li><a href="/tags/bash/">bash</a><small>1</small></li>
   
-    <li><a href="/tags/c-1/">c</a><small>3</small></li>
+    <li><a href="/tags/c/">c</a><small>3</small></li>
   
     <li><a href="/tags/cache/">cache</a><small>1</small></li>
   
@@ -364,7 +355,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 11.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 14.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 15.50px;">bash</a><a href="/tags/c-1/" style="font-size: 16.50px;">c</a><a href="/tags/cache/" style="font-size: 12.50px;">cache</a><a href="/tags/career/" style="font-size: 13.00px;">career</a><a href="/tags/database/" style="font-size: 18.50px;">database</a><a href="/tags/fun/" style="font-size: 15.00px;">fun</a><a href="/tags/git/" style="font-size: 13.50px;">git</a><a href="/tags/kernel/" style="font-size: 17.00px;">kernel</a><a href="/tags/language/" style="font-size: 17.50px;">language</a><a href="/tags/linux/" style="font-size: 19.50px;">linux</a><a href="/tags/math/" style="font-size: 10.50px;">math</a><a href="/tags/perf/" style="font-size: 14.50px;">perf</a><a href="/tags/program/" style="font-size: 19.00px;">program</a><a href="/tags/python/" style="font-size: 11.50px;">python</a><a href="/tags/regex/" style="font-size: 12.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 16.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
   </div>
 </div>
 
@@ -377,7 +368,8 @@
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="/js/jquery.imagesloaded.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
 
