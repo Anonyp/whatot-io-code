@@ -56,6 +56,59 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2013-09-22T13:34:38.000Z"><a href="/pub/linux_program/转makefile常用信息查询页/">9月 22 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/pub/linux_program/转makefile常用信息查询页/">转:Makefile常用信息查询页</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>From <a href="http://roclinux.cn/?p=3162" target="_blank"><a href="http://roclinux.cn/?p=3162">http://roclinux.cn/?p=3162</a></a></p>
+<h3>符号说明</h3>
+<p><strong>符号</strong> <strong>作用</strong></p>
+<ul>
+<li><code>\</code>     换行符</li>
+<li><code>@</code>     放在命令前面隐藏命令输出</li>
+<li><code>-</code>     放在命令前面忽略命令错误</li>
+<li><code>:</code>     以来规则定义符号，即目标:依赖</li>
+<li><code>.PHONY</code>显式声明伪目标</li>
+<li><code>$@</code>    表示规则中的目标文件集</li>
+<li><code>$%</code>    仅当目标是函数库文件时，表示规则中的目标成员名</li>
+<li><code>$&gt;</code>    依赖目标中的第一个目标名字，如果依赖目标是以模式（%）定义的，那么<code>$&gt;</code>将是符合模式的一系列的文件集。注意，其是一个一个取出来的</li>
+<li><code>$?</code>    所有同目标相比更新的依赖目标的集合。以空格间隔</li>
+<li><code>$^</code>    所有的依赖目标的集合。以空格间隔，且会去重</li>
+<li><code>$+</code>    和<code>$^</code>作用相似，但不会去重</li>
+<li><code>$*</code>    表示目标模式中%及其之前的部分</li>
+<li><code>D/F</code>   表示路径和文件名部分。<code>$(@F)</code>表示<code>$@</code>的文件部分</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/pub/linux_program/转makefile常用信息查询页/#more" class="more-link">阅读全文</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2013-08-03T15:11:35.000Z"><a href="/pub/linux/转正确用dd测试磁盘读写速度/">8月 3 2013</a></time>
       
       
@@ -223,45 +276,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-07-27T09:01:54.000Z"><a href="/pub/linux_program/转gallery-of-processor-cache-effects/">7月 27 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/pub/linux_program/转gallery-of-processor-cache-effects/">转:Gallery of Processor Cache Effects</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>原文地址：<br><a href="http://igoro.com/archive/gallery-of-processor-cache-effects/" target="_blank"><a href="http://igoro.com/archive/gallery-of-processor-cache-effects/">http://igoro.com/archive/gallery-of-processor-cache-effects/</a></a></p>
-<p>Most of my readers will understand that cache is a fast but small type of memory that stores recently accessed memory locations.  This description is reasonably accurate, but the “boring” details of how processor caches work can help a lot when trying to understand program performance.</p>
-<p>In this blog post, I will use code samples to illustrate various aspects of how caches work, and what is the impact on the performance of real-world programs.</p>
-<p>The examples are in C#, but the language choice has little impact on the performance scores and the conclusions they lead to.</p>
-
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/pub/linux_program/转gallery-of-processor-cache-effects/#more" class="more-link">阅读全文</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -299,7 +313,7 @@
   
     <li><a href="/categories/linux/">linux</a><small>6</small></li>
   
-    <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
+    <li><a href="/categories/linux_program/">linux_program</a><small>3</small></li>
   
     <li><a href="/categories/program/">program</a><small>1</small></li>
   
@@ -317,6 +331,8 @@
   <ul class="entry">
   
     <li><a href="/tags/CPU/">CPU</a><small>1</small></li>
+  
+    <li><a href="/tags/Makefile/">Makefile</a><small>1</small></li>
   
     <li><a href="/tags/algorithm/">algorithm</a><small>1</small></li>
   
@@ -340,11 +356,13 @@
   
     <li><a href="/tags/linux/">linux</a><small>7</small></li>
   
+    <li><a href="/tags/make/">make</a><small>1</small></li>
+  
     <li><a href="/tags/math/">math</a><small>1</small></li>
   
     <li><a href="/tags/perf/">perf</a><small>1</small></li>
   
-    <li><a href="/tags/program/">program</a><small>6</small></li>
+    <li><a href="/tags/program/">program</a><small>7</small></li>
   
     <li><a href="/tags/python/">python</a><small>1</small></li>
   
@@ -364,7 +382,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/Makefile/" style="font-size: 10.45px;">Makefile</a><a href="/tags/algorithm/" style="font-size: 10.91px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.36px;">bash</a><a href="/tags/c/" style="font-size: 11.82px;">c</a><a href="/tags/cache/" style="font-size: 12.27px;">cache</a><a href="/tags/career/" style="font-size: 12.73px;">career</a><a href="/tags/database/" style="font-size: 13.18px;">database</a><a href="/tags/fun/" style="font-size: 13.64px;">fun</a><a href="/tags/git/" style="font-size: 14.09px;">git</a><a href="/tags/kernel/" style="font-size: 14.55px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.45px;">linux</a><a href="/tags/make/" style="font-size: 15.91px;">make</a><a href="/tags/math/" style="font-size: 16.36px;">math</a><a href="/tags/perf/" style="font-size: 16.82px;">perf</a><a href="/tags/program/" style="font-size: 17.27px;">program</a><a href="/tags/python/" style="font-size: 17.73px;">python</a><a href="/tags/regex/" style="font-size: 18.18px;">regex</a><a href="/tags/shell/" style="font-size: 18.64px;">shell</a><a href="/tags/thought/" style="font-size: 19.09px;">thought</a><a href="/tags/vim/" style="font-size: 19.55px;">vim</a>
   </div>
 </div>
 

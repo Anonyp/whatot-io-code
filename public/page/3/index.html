@@ -56,6 +56,47 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2013-06-30T10:11:24.000Z"><a href="/pub/linux/转Linux-Unix终端支持256色/">6月 30 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/pub/linux/转Linux-Unix终端支持256色/">转:Linux/Unix终端支持256色</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://yysfire.github.io/linux/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8BLinux%E7%BB%88%E7%AB%AF%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81256%E8%89%B2.html" target="_blank">原文来源:</a></p>
+<p>运行以下命令, 若256种颜色全部输出，就表示支持256色。</p>
+<pre><code>$ (x=`tput op` y=`printf %76s`;<span class="keyword">for</span> i <span class="keyword">in</span> {0..256};<span class="keyword">do</span> o=00<span class="variable">$i</span>;<span class="keyword">echo</span> -e <span class="variable">${o:${#o}</span>-3:3} `tput setaf <span class="variable">$i</span>;tput setab <span class="variable">$i</span>`<span class="variable">${y// /=}</span><span class="variable">$x</span>;<span class="keyword">done</span>)</code></pre>
+<p>或者运行<code>tput colors</code>，输出现在终端所支持的颜色位数</p>
+<p>下列命令会输出你所支持的所有终端模拟器，以及它们支持的颜色位数，可能的值有：8, 15, 16, 52, 64, 88 和 256.</p>
+<pre><code>$ <span class="keyword">for</span> T <span class="keyword">in</span> `find /usr/share/terminfo -type f -printf <span class="string">'%f '</span>`;<span class="keyword">do</span> <span class="keyword">echo</span> <span class="string">"<span class="variable">$T</span> `tput -T <span class="variable">$T</span> colors`"</span>;<span class="keyword">done</span>|sort -nk2|tail -n20</code></pre>
+<p>可以在终端的配置文件，例如 .bashrc 中加入以下内容，使其支持256色：</p>
+<pre><code><span class="title">export</span> TERM=vte-256color</code></pre>
+<p>VIM 终端支持 256 色，需要在vimrc中添加</p>
+<pre><code><span class="operator"><span class="keyword">set</span> t_Co=<span class="number">256</span></code></pre>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2013-06-27T13:06:33.000Z"><a href="/pub/linux_program/perf简介/">6月 27 2013</a></time>
       
       
@@ -212,42 +253,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-06-19T01:16:40.000Z"><a href="/pub/python/转python下的正则表达式原理和优化笔记/">6月 19 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/pub/python/转python下的正则表达式原理和优化笔记/">转:Python下的正则表达式原理和优化笔记</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>本文转载：<a href="http://my.oschina.net/o0Kira0o/blog/138516" target="_blank">原文地址</a></p>
-<p>摘要： 本文旨在总结一些编写表达式的技巧和原理。鉴于介绍python中re模块的使用方法的文章太多。所以本文在基础方面都是略过，而在回溯原理和一些技巧方面记录一点点学习总结。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/pub/python/转python下的正则表达式原理和优化笔记/#more" class="more-link">阅读全文</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
 
 <nav id="pagination">
   
@@ -287,7 +292,7 @@
   
     <li><a href="/categories/linux/">linux</a><small>6</small></li>
   
-    <li><a href="/categories/linux_program/">linux_program</a><small>2</small></li>
+    <li><a href="/categories/linux_program/">linux_program</a><small>3</small></li>
   
     <li><a href="/categories/program/">program</a><small>1</small></li>
   
@@ -305,6 +310,8 @@
   <ul class="entry">
   
     <li><a href="/tags/CPU/">CPU</a><small>1</small></li>
+  
+    <li><a href="/tags/Makefile/">Makefile</a><small>1</small></li>
   
     <li><a href="/tags/algorithm/">algorithm</a><small>1</small></li>
   
@@ -328,11 +335,13 @@
   
     <li><a href="/tags/linux/">linux</a><small>7</small></li>
   
+    <li><a href="/tags/make/">make</a><small>1</small></li>
+  
     <li><a href="/tags/math/">math</a><small>1</small></li>
   
     <li><a href="/tags/perf/">perf</a><small>1</small></li>
   
-    <li><a href="/tags/program/">program</a><small>6</small></li>
+    <li><a href="/tags/program/">program</a><small>7</small></li>
   
     <li><a href="/tags/python/">python</a><small>1</small></li>
   
@@ -352,7 +361,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/algorithm/" style="font-size: 10.50px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.00px;">bash</a><a href="/tags/c/" style="font-size: 11.50px;">c</a><a href="/tags/cache/" style="font-size: 12.00px;">cache</a><a href="/tags/career/" style="font-size: 12.50px;">career</a><a href="/tags/database/" style="font-size: 13.00px;">database</a><a href="/tags/fun/" style="font-size: 13.50px;">fun</a><a href="/tags/git/" style="font-size: 14.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.50px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.50px;">linux</a><a href="/tags/math/" style="font-size: 16.00px;">math</a><a href="/tags/perf/" style="font-size: 16.50px;">perf</a><a href="/tags/program/" style="font-size: 17.00px;">program</a><a href="/tags/python/" style="font-size: 17.50px;">python</a><a href="/tags/regex/" style="font-size: 18.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.50px;">shell</a><a href="/tags/thought/" style="font-size: 19.00px;">thought</a><a href="/tags/vim/" style="font-size: 19.50px;">vim</a>
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/Makefile/" style="font-size: 10.45px;">Makefile</a><a href="/tags/algorithm/" style="font-size: 10.91px;">algorithm</a><a href="/tags/bash/" style="font-size: 11.36px;">bash</a><a href="/tags/c/" style="font-size: 11.82px;">c</a><a href="/tags/cache/" style="font-size: 12.27px;">cache</a><a href="/tags/career/" style="font-size: 12.73px;">career</a><a href="/tags/database/" style="font-size: 13.18px;">database</a><a href="/tags/fun/" style="font-size: 13.64px;">fun</a><a href="/tags/git/" style="font-size: 14.09px;">git</a><a href="/tags/kernel/" style="font-size: 14.55px;">kernel</a><a href="/tags/language/" style="font-size: 15.00px;">language</a><a href="/tags/linux/" style="font-size: 15.45px;">linux</a><a href="/tags/make/" style="font-size: 15.91px;">make</a><a href="/tags/math/" style="font-size: 16.36px;">math</a><a href="/tags/perf/" style="font-size: 16.82px;">perf</a><a href="/tags/program/" style="font-size: 17.27px;">program</a><a href="/tags/python/" style="font-size: 17.73px;">python</a><a href="/tags/regex/" style="font-size: 18.18px;">regex</a><a href="/tags/shell/" style="font-size: 18.64px;">shell</a><a href="/tags/thought/" style="font-size: 19.09px;">thought</a><a href="/tags/vim/" style="font-size: 19.55px;">vim</a>
   </div>
 </div>
 

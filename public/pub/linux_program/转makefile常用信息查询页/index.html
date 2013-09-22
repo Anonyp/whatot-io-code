@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>fun | Whatot 日常积累</title>
+  <title>转:Makefile常用信息查询页 | Whatot 日常积累</title>
   <meta name="author" content="whatot">
   
   <meta name="description" content="whatot blog">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="转:Makefile常用信息查询页"/>
   <meta property="og:site_name" content="Whatot 日常积累"/>
 
   
@@ -49,25 +49,112 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title category">fun</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-09-22T13:34:38.000Z"><a href="/pub/linux_program/转makefile常用信息查询页/">9月 22 2013</a></time>
+      
+      
+  
+    <h1 class="title">转:Makefile常用信息查询页</h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <p>From <a href="http://roclinux.cn/?p=3162" target="_blank"><a href="http://roclinux.cn/?p=3162">http://roclinux.cn/?p=3162</a></a></p>
+<h3>符号说明</h3>
+<p><strong>符号</strong> <strong>作用</strong></p>
+<ul>
+<li><code>\</code>     换行符</li>
+<li><code>@</code>     放在命令前面隐藏命令输出</li>
+<li><code>-</code>     放在命令前面忽略命令错误</li>
+<li><code>:</code>     以来规则定义符号，即目标:依赖</li>
+<li><code>.PHONY</code>显式声明伪目标</li>
+<li><code>$@</code>    表示规则中的目标文件集</li>
+<li><code>$%</code>    仅当目标是函数库文件时，表示规则中的目标成员名</li>
+<li><code>$&gt;</code>    依赖目标中的第一个目标名字，如果依赖目标是以模式（%）定义的，那么<code>$&gt;</code>将是符合模式的一系列的文件集。注意，其是一个一个取出来的</li>
+<li><code>$?</code>    所有同目标相比更新的依赖目标的集合。以空格间隔</li>
+<li><code>$^</code>    所有的依赖目标的集合。以空格间隔，且会去重</li>
+<li><code>$+</code>    和<code>$^</code>作用相似，但不会去重</li>
+<li><code>$*</code>    表示目标模式中%及其之前的部分</li>
+<li><code>D/F</code>   表示路径和文件名部分。<code>$(@F)</code>表示<code>$@</code>的文件部分</li>
+</ul>
+<a id="more"></a>
 
-  <div class="archive">
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2013-06-09T02:30:05.000Z"><a href="/pub/fun/转brief-incomplete-and-mostly-wrong/">6月 9 2013</a></time>
-            
-              <h1 class="title"><a href="/pub/fun/转brief-incomplete-and-mostly-wrong/">【转】【译文】程序语言简史（伪）</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+<h3>函数说明</h3>
+<p><strong>函数</strong> <strong>说明</strong></p>
+<ul>
+<li><code>$(subst &lt;from&gt;, &lt;to&gt;, &lt;text&gt;)</code>把<code>text</code>中的<code>from</code>替换为<code>to</code></li>
+<li><code>$(patsubst &lt;pattern&gt;,&lt;replacement&gt;,&lt;text&gt;)</code>模式替换</li>
+<li><code>$(strip &lt;string&gt;)</code>去掉<code>string</code>字串中开头和结尾的空字符</li>
+<li><code>$(findstring &lt;find&gt;,&lt;in&gt;)</code>在<code>in</code>中找<code>find</code>字串</li>
+<li><code>$(filter &lt;pattern&gt;,&lt;text&gt;)</code>过滤<code>text</code>，并保留符合<code>pattern</code>模式的字符串</li>
+<li><code>$(filter-out &lt;pattern&gt;,&lt;text&gt;)</code>和<code>filter</code>相反</li>
+<li><code>$(sort &lt;list&gt;)</code>给字串<code>list</code>中的单词升序排序</li>
+<li><code>$(word &lt;n&gt;,&lt;text&gt;)</code>取字串<code>&lt;text&gt;</code>中第n个单词</li>
+<li><code>$(wordlist &lt;s&gt;,&lt;e&gt;,&lt;text&gt;)</code>从<code>text</code>中取从<code>s</code>开始到<code>e</code>的字符串。<code>s</code>和<code>e</code>是数字</li>
+<li><code>$(words &lt;text&gt;)</code>统计<code>text</code>的单词个数</li>
+<li><code>$(firstword &lt;text&gt;)</code>取<code>text</code>的第一个单词</li>
+<li><code>$(dir &lt;names&gt;)</code>从文件名<code>names</code>中取出目录部分</li>
+<li><code>$(notdir &lt;names&gt;)</code>从文件名<code>names</code>种取出非目录部分</li>
+<li><code>$(suffix &lt;names&gt;)</code>取出文件名后缀</li>
+<li><code>$(basename &lt;names&gt;)</code>取出文件名部分</li>
+<li><code>$(addsuffix &lt;suffix&gt;,&lt;names&gt;)</code>把后缀<code>suffix</code>加到<code>names</code>中每个单词后面</li>
+<li><code>$(addprefix &lt;prefix&gt;,&lt;names&gt;)</code>把前缀<code>prefix</code>加到<code>names</code>每个单词前面</li>
+<li><code>$(join &lt;list1&gt;,&lt;list2&gt;)</code>把<code>list1</code>加到<code>list2</code>后面</li>
+<li><code>$(foreach &lt;var&gt;,&lt;list&gt;,&lt;text&gt;)</code>把<code>list</code>里的单词一一取出，放到<code>var</code>中，然后执行<code>text</code>所包含的表达式，表达式会返回一个字符串。多个字符串用空格间隔。<code>foreach</code>会返回这样一个字符串列表。</li>
+<li><code>$(if &lt;condition&gt;,&lt;then-part&gt;)</code>if语句</li>
+<li><code>$(call &lt;expression&gt;,&lt;parm1&gt;,&lt;parm2&gt;,&lt;parm3&gt;)</code>调用表达式，表达式中的<code>$(1),$(2),$(3)</code>会替换为三个参数。</li>
+<li><code>$(origin &lt;variable&gt;)</code> 会告诉我们这个变量是哪里来的。</li>
+<li><code>$(error &lt;text&gt;)</code>产生一个致命错误，<code>text</code>是错误信息，退出</li>
+<li><code>$(waring &lt;text&gt;)</code>输出一个警告信息，而<code>make</code>继续执行</li>
+<li><code>$(shell &lt;command&gt;)</code>使用<code>shell</code>执行<code>command</code>命令</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/linux_program/">linux_program</a>
   </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Makefile/">Makefile</a>, <a href="/tags/make/">make</a>, <a href="/tags/program/">program</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
