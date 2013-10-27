@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>转:世界上最简单的无锁哈希表 | Whatot 日常积累</title>
+  <meta name="author" content="whatot">
+  
+  <meta name="description" content="whatot blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="转:世界上最简单的无锁哈希表"/>
+  <meta property="og:site_name" content="Whatot 日常积累"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Whatot 日常积累" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Whatot 日常积累</a></h1>
+  <h2><a href="/">积累每一天，无论是技术还是生活</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">存档</a></li>
+    
+      <li><a href="/links">链接</a></li>
+    
+      <li><a href="/tools">工具集</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-06-10T07:53:45.000Z"><a href="/pub/algorithm/algorithm/转:世界上最简单的无锁哈希表/">6月 10 2013</a></time>
+      
+      
+  
+    <h1 class="title">转:世界上最简单的无锁哈希表</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://blog.jobbole.com/39186/" target="_blank">转:世界上最简单的无锁哈希表</a></p>
+<p>英文原文：<a href="http://preshing.com/20130605/the-worlds-simplest-lock-free-hash-table" target="_blank">preshing</a>，<br>感谢<a href="http://weibo.com/1913446335" target="_blank">@浅水清流</a> 的热心翻译。如果其他朋友也有不错的原创或译文，可以尝试推荐给伯乐在线。以下是译文。</p>
+<hr>
+<p>无锁哈希表（Lock-Free Hash Table ）可以提高多线程下的性能表现，但是因为实现一个无锁哈希表本身的复杂度不小。（ps：真正的复杂在于出错之后的调试，因为多线程下的调试本身就很复杂，引入无锁数据结构之后，传统的看堆栈信息和打印log都基本上没有意义了。堆栈中的数据可能被并发访问破坏，而打印log本身可能会改变程序执行时对数据访问的时序。一个比较可行的做法是实现一个无锁版本和一个传统数据结构+锁的版本，出错后通过替换来定位是无锁数据结构本身的bug还是其他逻辑的bug）。所以对一个项目而言，无锁数据结构基本上是一把双刃剑。</p>
+<p>据我所知，第一个用于实际开发的无锁哈希表是<br><a href="http://www.azulsystems.com/blog/cliff" target="_blank">Dr. Cliff Click</a><br>为Java而写。</p>
+<p>在2007年他发布了这个无锁哈希表的源码并且在google做了关于它的报告<br>（<a href="http://www.youtube.com/watch?v=HJ-719EGIts" target="_blank">视频</a>）。</p>
+<p>我承认，在我第一次看这个报告的时候，我对它的大部分内容都不理解。Dr. Cliff Click是这个领域的先驱。<br>(Maged M. Michael 在IBM做了大量关于无锁数据结构的研究。这个是2002年的一篇论文，</p>
+<p>关于哈希表，<a href="http://www.research.ibm.com/people/m/michael/spaa-2002.pdf" target="_blank">http://www.research.ibm.com/people/m/michael/spaa-2002.pdf</a>)</p>
+<p>很幸运，6年时间足够我理解Dr. Cliff Click所做的研究。事实上，你不必做一些前沿的探索，去实现一个完美的无锁哈希表。在这里我将分享我实现的这个版本。我相信有使用C++进行多线程开发经验的程序员，可以通过这篇博客梳理以前的经验，并且完全理解它。</p>
+<a id="more"></a>
+
+<h2>约束</h2>
+<p>作为一个程序员，平时我们实现一个数据结构会本能的尽可能通用。这不是一件坏事，但是当我们把通用当作一个更重要的目标时，它可能会阻碍我们。在这里我走向另一个极端，实现了一个尽可能简单的，仅用于一些特殊环境的哈希表，下面是它的设计约束：</p>
+<ol>
+<li>table 只接受类型为32位整数的key和value</li>
+<li>所有key必须非零</li>
+<li>table的最大数目固定且必须是2的幂</li>
+<li>所有的value必须非零</li>
+<li>唯一可用的操作是SetItem和getItem</li>
+<li>有没有删除操作</li>
+</ol>
+<p>当然你掌握了这种算法实现机制之后，可以在此基础上进行扩展，而不受这些限制的约束。（rehash，删除和遍历，这些都会增加复杂度，而且有引发新的ABA问题的可能性）。</p>
+<h2>实现方法</h2>
+<p>有很多种方法来实现一个哈希表。这里我选择了用我以前的帖子中描述的ArrayOfItems类做一个简单的修改，（前置扩展阅读）<br><a href="http://preshing.com/20130529/a-lock-free-linear-search" target="_blank">A Lock-Free… Linear Search?</a></p>
+<p>这个哈希表被我称为HashTable1，和ArrayOfItems一样，它采用了一个巨大的key-value pairs数组实现。</p>
+<pre><code>struct Entry
+{
+mint_atomic32_t key<span class="comment">;</span>
+mint_atomic32_t value<span class="comment">;</span>
+}<span class="comment">;</span>
+Entry *m_entries<span class="comment">;</span></code></pre>
+<p>在hashtable1中，仅仅只有数组本身而没有使用链接来处理碰撞。数组全部初始化为0,key为0时对应的节点为空。插入时，会通过线性搜索找到一个空节点。</p>
+<p>ArrayOfItems和HashTable1之间唯一的区别是，ArrayOfItems是从0开始做线性搜索，</p>
+<p>而HashTable1使用<a href="https://code.google.com/p/smhasher/wiki/MurmurHash3" target="_blank">MurmurHash3′s integer finalizer</a><br>算法得到一个hash值，然后以这个hash值为起点开始搜索()</p>
+<pre><code><span class="title">inline</span> static uint32_t integerHash(uint32_t h)
+{
+    <span class="title">h</span><span class="regexp"> ^=</span> h &gt;&gt; <span class="number">16</span>;
+    <span class="title">h</span> *= 0x85ebca6b;
+    <span class="title">h</span><span class="regexp"> ^=</span> h &gt;&gt; <span class="number">13</span>;
+    <span class="title">h</span> *= 0xc2b2ae35;
+    <span class="title">h</span><span class="regexp"> ^=</span> h &gt;&gt; <span class="number">16</span>;
+    <span class="title">return</span> h;
+}</code></pre>
+<p>当我们使用相同的key做参数调用SetItem或GetItem方法时，它会在相同的index开始做线性搜索，而使用不同的key时，会在不同的index开始搜索。通过这种方式，可以提高查找到对应key所在节点的速度，并且保证多线程并发调用SetItem或GetItem的安全性。</p>
+<p><img src="/img/unlock-hash-diagram.png" alt="unlock-hash-diagram.png"></p>
+<p>HashTable1采用环形的搜索，当搜索到尾部时，会从数组头部开始继续搜索。在数组满之前，每次搜索都可以保证返回对应key所在的节点，或者是一个空节点。这种技巧被称为open addressing with linear probing,，在我看来这无疑是对lock-free最友好的hash算法，事实上在Dr. Cliff Click为java实现的哈希表中也使用了相同的技巧。</p>
+<h2>代码</h2>
+<p>SetItem的实现。它会扫描整个数组并且将value保存在与key对应的节点或空节点。这段代码与ArrayOfItems:: SetItem几乎相同，唯一的区别是计算了hash值并且按位与，保证index在数组边界内。</p>
+<pre><code><span class="keyword">void</span> HashTable1::SetItem(uint32_t key, uint32_t <span class="keyword">value</span>)
+{
+    <span class="keyword">for</span> (uint32_t idx = integerHash(key);; idx++)
+    {
+        idx &amp;= m_arraySize - <span class="number">1</span>;
+
+        uint32_t prevKey = mint_compare_exchange_strong_32_relaxed(&amp;m_entries[idx].key, <span class="number">0</span>, key);
+        <span class="keyword">if</span> ((prevKey == <span class="number">0</span>) || (prevKey == key))
+        {
+            mint_store_32_relaxed(&amp;m_entries[idx].<span class="keyword">value</span>, <span class="keyword">value</span>);
+            <span class="keyword">return</span>;
+        }
+    }
+}</code></pre>
+<p>GetItem的实现也同样和ArrayOfItems::GetItem有类似的改变。</p>
+<pre><code>uint32_t HashTable1::GetItem(uint32_t key)
+{
+    <span class="keyword">for</span> (uint32_t idx = integerHash(key);; idx++)
+    {
+        idx &amp;= m_arraySize - <span class="number">1</span>;
+
+        uint32_t probedKey = mint_load_32_relaxed(&amp;m_entries[idx]<span class="variable">.key</span>);
+        <span class="keyword">if</span> (probedKey == key)
+            <span class="keyword">return</span> mint_load_32_relaxed(&amp;m_entries[idx]<span class="variable">.value</span>);
+        <span class="keyword">if</span> (probedKey == <span class="number">0</span>)
+            <span class="keyword">return</span> <span class="number">0</span>;
+    }
+}</code></pre>
+<p>上述功能都是线程安全的，无锁的ArrayOfItems出于同样的原因：对数组的元素采用原子操作，使用 cas 操作修改节点的key值(使用内存栅障保证线程安全，事实上就是重新排列了内存访问指令的执行次序)。在<br><a href="http://preshing.com/20130529/a-lock-free-linear-search" target="_blank">上一篇</a><br>中有更详细的讨论。</p>
+<p>最后，就像在以前的帖子中，我们可以优化SetItem，第一次判断是否可以避免使用CAS操作。如下这种优化，可以使示例应用程序运行快大约20％。</p>
+<pre><code>void HashTable1::SetItem(uint32_t key, uint32_t value)
+{
+    <span class="keyword">for</span> (uint32_t idx = integerHash(key);; idx++)
+    {
+        idx &amp;= m_arraySize - <span class="number">1</span>;
+
+        // Load <span class="keyword">the</span> key <span class="keyword">that</span> was there.
+        uint32_t probedKey = mint_load_32_relaxed(&amp;m_entries[idx].key);
+        <span class="keyword">if</span> (probedKey != key)
+        {
+            // The entry was either free, <span class="keyword">or</span> <span class="keyword">contains</span> another key.
+            <span class="keyword">if</span> (probedKey != <span class="number">0</span>)
+                <span class="keyword">continue</span>;
+                // Usually, <span class="keyword">it</span> <span class="keyword">contains</span> another key. Keep probing.
+
+            // The entry was free. Now let's <span class="keyword">try</span> <span class="keyword">to</span> take <span class="keyword">it</span> using a CAS.
+            uint32_t prevKey = mint_compare_exchange_strong_32_relaxed(&amp;m_entries[idx].key, <span class="number">0</span>, key);
+            <span class="keyword">if</span> ((prevKey != <span class="number">0</span>) &amp;&amp; (prevKey != key))
+                <span class="keyword">continue</span>;
+                // Another thread just stole <span class="keyword">it</span> <span class="keyword">from</span> underneath us.
+
+            // Either we just added <span class="keyword">the</span> key, <span class="keyword">or</span> another thread did.
+        }
+
+        // Store <span class="keyword">the</span> value <span class="keyword">in</span> this array entry.
+        mint_store_32_relaxed(&amp;m_entries[idx].value, value);
+<span class="command">        return</span>;
+    }
+}</code></pre>
+<p>这个就是几乎可以精简的最简单的无锁哈希表，这里是它的代码链接:<br><a href="https://github.com/mintomic/samples/blob/master/common/hashtable1.cpp" target="_blank">source</a> and<br><a href="https://github.com/mintomic/samples/blob/master/common/hashtable1.h" target="_blank">header</a>。</p>
+<p>一个忠告：与ArrayOfItems一样，HashTable1上的所有操作都采用了relaxed memory ordering做限制。因此，当在HashTable1中设置标记，共享一些数据供其他线程访问时，必须事先插入release fence。同样访问数据的线程在调用GetItem前需要acquire fence。</p>
+<pre><code>// Shared variables
+char message[<span class="number">256</span>];
+HashTable1 collection;
+
+void PublishMessage()
+{
+    // Write <span class="keyword">to</span> shared memory non-atomically.
+    strcpy(message, <span class="string">"I pity the fool!"</span>);
+
+    // Release fence: The only way <span class="keyword">to</span> safely pass non-atomic data <span class="keyword">between</span> threads using Mintomic.
+    mint_thread_fence_release();
+
+    // Set a flag <span class="keyword">to</span> indicate <span class="keyword">to</span> other threads <span class="keyword">that</span> <span class="keyword">the</span> message <span class="keyword">is</span> ready.
+    collection.SetItem(SHARED_FLAG_KEY, <span class="number">1</span>)
+}</code></pre>
+<h2>简单样例</h2>
+<p>对HashTable1的一些测试对比，在上一篇帖子我做个一个类似的测试。它交替执行2个测试：一个采用2个线程，每个线程交替插入6000个key不同的item，另一个每个线程交替插入12000个key相同但是value不同的item。</p>
+<p>代码放在<br><a href="https://github.com/mintomic/samples" target="_blank">GitHub</a>上，你可以自己编译和执行。编译说明见<br><a href="https://github.com/mintomic/samples#readme" target="_blank">README.md</a></p>
+<p>在HashTable1没有满时—少于80%时—HashTable1表现的很好，我也许应该为这个说法做一些基准测试。但是以以往的常规的哈希表作为基准，我敢肯定你很难实现出性能更好的无锁哈希表。这似乎奇怪，HashTable1基于ArrayOfItems，看起来会很低效。当然，任何哈希表中，总会有发生碰撞的风险，而降阶到ArrayOfItems的风险并不为0。但是使用一个足够大的数组和类似MurmurHash3这样的hash函数，这种情况出现的很少。</p>
+<p>在实际的工作中，我已经使用了一个和这个类似的hash-table。这是一个游戏开发的项目，我的工作是解决使用内存分配跟踪工具(memory tracker)之后对一个读写锁激烈的争用。迁移到无锁哈希表的过程非常棘手。相对HashTable1需要更复杂的数据结构，key和value都是指针而不是简单的整数。因此有必要在哈希表内部插入memory ordering。最终在此模式下运行：最坏情况下游戏的帧率提高了4-10 FPS。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/algorithm/">algorithm</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/algorithm/">algorithm</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://whatot.github.io/pub/algorithm/algorithm/转:世界上最简单的无锁哈希表/" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:whatot.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/algorithm/">algorithm</a><small>1</small></li>
+  
+    <li><a href="/categories/basis/">basis</a><small>1</small></li>
+  
+    <li><a href="/categories/c/">c</a><small>3</small></li>
+  
+    <li><a href="/categories/database/">database</a><small>6</small></li>
+  
+    <li><a href="/categories/fun/">fun</a><small>1</small></li>
+  
+    <li><a href="/categories/git/">git</a><small>1</small></li>
+  
+    <li><a href="/categories/kernel/">kernel</a><small>2</small></li>
+  
+    <li><a href="/categories/linux/">linux</a><small>6</small></li>
+  
+    <li><a href="/categories/linux_program/">linux_program</a><small>3</small></li>
+  
+    <li><a href="/categories/program/">program</a><small>1</small></li>
+  
+    <li><a href="/categories/python/">python</a><small>1</small></li>
+  
+    <li><a href="/categories/thought/">thought</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/CPU/">CPU</a><small>1</small></li>
+  
+    <li><a href="/tags/Makefile/">Makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/algorithm/">algorithm</a><small>1</small></li>
+  
+    <li><a href="/tags/bash/">bash</a><small>1</small></li>
+  
+    <li><a href="/tags/c/">c</a><small>3</small></li>
+  
+    <li><a href="/tags/cache/">cache</a><small>1</small></li>
+  
+    <li><a href="/tags/career/">career</a><small>1</small></li>
+  
+    <li><a href="/tags/database/">database</a><small>6</small></li>
+  
+    <li><a href="/tags/fun/">fun</a><small>1</small></li>
+  
+    <li><a href="/tags/git/">git</a><small>1</small></li>
+  
+    <li><a href="/tags/kernel/">kernel</a><small>3</small></li>
+  
+    <li><a href="/tags/language/">language</a><small>4</small></li>
+  
+    <li><a href="/tags/linux/">linux</a><small>7</small></li>
+  
+    <li><a href="/tags/make/">make</a><small>1</small></li>
+  
+    <li><a href="/tags/math/">math</a><small>1</small></li>
+  
+    <li><a href="/tags/perf/">perf</a><small>1</small></li>
+  
+    <li><a href="/tags/program/">program</a><small>7</small></li>
+  
+    <li><a href="/tags/python/">python</a><small>1</small></li>
+  
+    <li><a href="/tags/regex/">regex</a><small>1</small></li>
+  
+    <li><a href="/tags/shell/">shell</a><small>6</small></li>
+  
+    <li><a href="/tags/thought/">thought</a><small>2</small></li>
+  
+    <li><a href="/tags/vim/">vim</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/CPU/" style="font-size: 10.00px;">CPU</a><a href="/tags/Makefile/" style="font-size: 10.00px;">Makefile</a><a href="/tags/algorithm/" style="font-size: 10.00px;">algorithm</a><a href="/tags/bash/" style="font-size: 10.00px;">bash</a><a href="/tags/c/" style="font-size: 14.00px;">c</a><a href="/tags/cache/" style="font-size: 10.00px;">cache</a><a href="/tags/career/" style="font-size: 10.00px;">career</a><a href="/tags/database/" style="font-size: 18.00px;">database</a><a href="/tags/fun/" style="font-size: 10.00px;">fun</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/kernel/" style="font-size: 14.00px;">kernel</a><a href="/tags/language/" style="font-size: 16.00px;">language</a><a href="/tags/linux/" style="font-size: 20.00px;">linux</a><a href="/tags/make/" style="font-size: 10.00px;">make</a><a href="/tags/math/" style="font-size: 10.00px;">math</a><a href="/tags/perf/" style="font-size: 10.00px;">perf</a><a href="/tags/program/" style="font-size: 20.00px;">program</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/regex/" style="font-size: 10.00px;">regex</a><a href="/tags/shell/" style="font-size: 18.00px;">shell</a><a href="/tags/thought/" style="font-size: 12.00px;">thought</a><a href="/tags/vim/" style="font-size: 10.00px;">vim</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2013 whatot
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
