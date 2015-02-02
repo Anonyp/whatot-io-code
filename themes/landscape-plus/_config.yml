@@ -2,6 +2,8 @@
 menu:
   Home: /
   Archives: /archives
+  Everyweek: /Everyweek
+  Tools: /Tools
 rss: /atom.xml
 
 # Content
